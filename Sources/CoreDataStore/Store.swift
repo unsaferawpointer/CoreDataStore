@@ -80,20 +80,20 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 }
 
 extension Store {
-    var numberOfObjects : Int {
+	public var numberOfObjects : Int {
         return fetchedResultController.fetchedObjects?.count ?? 0
     }
 }
 
 extension Store {
     
-    var objects: [T] {
+	public var objects: [T] {
         return fetchedResultController.fetchedObjects ?? []
     }
     
 	
 	/// Perform fetch and call 'storeDidReloadContent' of the delegate
-    func performFetch(with predicate: NSPredicate?) -> [T] {
+	public func performFetch(with predicate: NSPredicate?) -> [T] {
         fetchedResultController.fetchRequest.predicate = predicate
         do {
             try fetchedResultController.performFetch()
@@ -108,17 +108,17 @@ extension Store {
 
 extension Store {
     
-    func save() {
+    public func save() {
         CoreDataManager.shared.save()
     }
     
-    func newObject() -> T {
+	public func newObject() -> T {
         let newObject = T(context: viewContext)
         save()
         return newObject
     }
     
-    func delete(object: T) {
+	public func delete(object: T) {
         viewContext.delete(object)
         save()
     }
