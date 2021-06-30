@@ -1,3 +1,3 @@
 # CoreDataStore
 
-A description of this package.
+This package incapsulate work with Core Data stack.
