@@ -5,7 +5,6 @@
 //  Created by Anton Cherkasov on 08.05.2021.
 //
 
-import AppKit
 import CloudKit
 import CoreData
 
@@ -13,13 +12,13 @@ class CoreDataManager {
     
     static let shared = CoreDataManager()
     
-    final private init() { }
+    private init() { }
     
     final var viewContext: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
 	
-	var containerName: String? {
+	var containerName: String {
 		fatalError("Property must be overriden in subclass")
 	}
     
@@ -68,7 +67,7 @@ class CoreDataManager {
             } catch {
                 // Customize this code block to include application-specific recovery steps.
                 let nserror = error as NSError
-                NSApplication.shared.presentError(nserror)
+                //NSApplication.shared.presentError(nserror)
             }
         }
     }
@@ -86,7 +85,7 @@ class CoreDataManager {
             } catch {
                 // Customize this code block to include application-specific recovery steps.
                 let nserror = error as NSError
-                NSApplication.shared.presentError(nserror)
+                //NSApplication.shared.presentError(nserror)
             }
         }
     }
