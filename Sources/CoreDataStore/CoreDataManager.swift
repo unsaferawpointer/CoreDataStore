@@ -14,17 +14,17 @@ open class CoreDataManager {
     
     private init() { }
     
-    var viewContext: NSManagedObjectContext {
+    public var viewContext: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
 	
-	var containerName: String {
+	public var containerName: String {
 		fatalError("Property must be overriden in subclass")
 	}
     
     // MARK: - Core Data stack
     
-    lazy var persistentContainer: NSPersistentCloudKitContainer = {
+    public lazy var persistentContainer: NSPersistentCloudKitContainer = {
 
         let container = NSPersistentCloudKitContainer(name: containerName)
         
@@ -54,7 +54,7 @@ open class CoreDataManager {
     
     // MARK: - Core Data Saving and Undo support
     
-    func saveAction(_ sender: AnyObject?) {
+    public func saveAction(_ sender: AnyObject?) {
         // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
         let context = persistentContainer.viewContext
         
@@ -72,7 +72,7 @@ open class CoreDataManager {
         }
     }
     
-    func save() {
+    public func save() {
         // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
         let context = persistentContainer.viewContext
         
