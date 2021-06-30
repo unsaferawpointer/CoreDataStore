@@ -18,14 +18,16 @@ open class CoreDataManager {
         return persistentContainer.viewContext
     }
 	
-	public var containerName: String {
-		fatalError("Property must be overriden in subclass")
-	}
+	public var containerName: String?
     
     // MARK: - Core Data stack
     
     public lazy var persistentContainer: NSPersistentCloudKitContainer = {
 
+		guard let containerName = containerName else {
+			fatalError("container name must be not nil")
+		}
+		
         let container = NSPersistentCloudKitContainer(name: containerName)
         
         container.persistentStoreDescriptions.first?.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
