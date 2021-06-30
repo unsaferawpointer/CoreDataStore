@@ -14,7 +14,7 @@ class CoreDataManager {
     
     private init() { }
     
-    final var viewContext: NSManagedObjectContext {
+    var viewContext: NSManagedObjectContext {
         return persistentContainer.viewContext
     }
 	
@@ -24,7 +24,7 @@ class CoreDataManager {
     
     // MARK: - Core Data stack
     
-    final lazy var persistentContainer: NSPersistentCloudKitContainer = {
+    lazy var persistentContainer: NSPersistentCloudKitContainer = {
 
         let container = NSPersistentCloudKitContainer(name: containerName)
         
@@ -54,7 +54,7 @@ class CoreDataManager {
     
     // MARK: - Core Data Saving and Undo support
     
-    final func saveAction(_ sender: AnyObject?) {
+    func saveAction(_ sender: AnyObject?) {
         // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
         let context = persistentContainer.viewContext
         
@@ -72,7 +72,7 @@ class CoreDataManager {
         }
     }
     
-    final func save() {
+    func save() {
         // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
         let context = persistentContainer.viewContext
         
@@ -94,15 +94,15 @@ class CoreDataManager {
 
 extension CoreDataManager {
 	
-	final var newBackgroundContext: NSManagedObjectContext {
+	var newBackgroundContext: NSManagedObjectContext {
 		persistentContainer.newBackgroundContext()
 	}
 	
-	final func performForeground(task: @escaping (NSManagedObjectContext) -> Void) {
+	func performForeground(task: @escaping (NSManagedObjectContext) -> Void) {
 		viewContext.perform { task(self.viewContext) }
 	}
 	
-	final func performBackground(task: @escaping (NSManagedObjectContext) -> Void) {
+	func performBackground(task: @escaping (NSManagedObjectContext) -> Void) {
 		persistentContainer.performBackgroundTask(task)
 	}
 	
