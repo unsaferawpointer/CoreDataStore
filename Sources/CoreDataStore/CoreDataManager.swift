@@ -8,7 +8,7 @@
 import CloudKit
 import CoreData
 
-class CoreDataManager {
+public class CoreDataManager {
     
     static let shared = CoreDataManager()
     

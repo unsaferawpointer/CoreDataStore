@@ -8,17 +8,17 @@
 import AppKit
 import CoreData
 
-protocol StoreDelegate : AnyObject {
-    func storeDidReloadContent()
-    func storeWillChangeContent()
-    func storeDelete(object: NSManagedObject, at index: Int)
-    func storeInsert(object: NSManagedObject, at index: Int)
-    func storeUpdate(object: NSManagedObject, at index: Int)
-    func storeMove(object: NSManagedObject, from fromIndex: Int, to toIndex: Int)
-    func storeDidChangeContent()
+public protocol StoreDelegate : AnyObject {
+	func storeDidReloadContent()
+	func storeWillChangeContent()
+	func storeDelete(object: NSManagedObject, at index: Int)
+	func storeInsert(object: NSManagedObject, at index: Int)
+	func storeUpdate(object: NSManagedObject, at index: Int)
+	func storeMove(object: NSManagedObject, from fromIndex: Int, to toIndex: Int)
+	func storeDidChangeContent()
 }
 
-class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
+public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
     
     weak var delegate: StoreDelegate?
     
@@ -39,12 +39,12 @@ class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
         self.fetchedResultController.delegate = self
     }
     
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+	public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.storeWillChangeContent()
         print(#function)
     }
     
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         print(#function)
         print("oldPath = \(indexPath) newPath = \(newIndexPath)")
         guard let object = anObject as? T else {
@@ -72,7 +72,7 @@ class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
         }
     }
     
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+	public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.storeDidChangeContent()
         print(#function)
     }
