@@ -20,7 +20,7 @@ public protocol StoreDelegate : AnyObject {
 
 public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
     
-    weak var delegate: StoreDelegate?
+    public weak var delegate: StoreDelegate?
     
     private var fetchedResultController: NSFetchedResultsController<T>
     private var viewContext: NSManagedObjectContext
