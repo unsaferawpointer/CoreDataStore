@@ -25,10 +25,9 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
     private var fetchedResultController: NSFetchedResultsController<T>
     private var viewContext: NSManagedObjectContext
     
-    public init(sortBy sortDescriptors: [NSSortDescriptor]) {
-        
+	public init(viewContext: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor]) {
+		self.viewContext = viewContext
         let fetchRequest: NSFetchRequest<T> = NSFetchRequest<T>.init(entityName: T.className())
-        self.viewContext = CoreDataManager.shared.viewContext
         
         fetchRequest.sortDescriptors = sortDescriptors
         
