@@ -89,7 +89,6 @@ extension Store {
 	public var objects: [T] {
         return fetchedResultController.fetchedObjects ?? []
     }
-    
 	
 	/// Perform fetch and call 'storeDidReloadContent' of the delegate
 	public func performFetch(with predicate: NSPredicate?) -> [T] {
