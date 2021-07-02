@@ -18,7 +18,7 @@ public class CoreDataManager {
         return persistentContainer.viewContext
     }
 
-	public var containerName: String?
+	public var containerName: String? = "Just_Notepad"
 
     // MARK: - Core Data stack
 

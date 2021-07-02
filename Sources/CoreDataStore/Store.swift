@@ -15,8 +15,8 @@ import UIKit
 import CoreData
 
 public protocol StoreDelegate : AnyObject {
-	func storeDidInsert(section: NSFetchedResultsSectionInfo, at index: Int)
-	func storeDidDelete(section: NSFetchedResultsSectionInfo, at index: Int)
+//	func storeDidInsert(section: NSFetchedResultsSectionInfo, at index: Int)
+//	func storeDidDelete(section: NSFetchedResultsSectionInfo, at index: Int)
 	func storeDidReloadContent()
 	func storeWillChangeContent()
 	func storeDelete(object: NSManagedObject, at index: Int)
@@ -51,47 +51,17 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
         print(#function)
     }
 	
-	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-		switch type {
-		case .insert:
-			delegate?.storeDidInsert(section: sectionInfo, at: sectionIndex)
-		case .delete:
-			delegate?.storeDidDelete(section: sectionInfo, at: sectionIndex)
-		default:
-			fatalError("other types are not supported ")
-		}
-	}
-	
-	//#if os(iOS)
-//	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-//		print(#function)
-//		print("oldPath = \(indexPath) newPath = \(newIndexPath)")
-//		guard let object = anObject as? T else {
-//			fatalError("\(anObject) is not NSManagedObject")
-//		}
+//	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 //		switch type {
 //		case .insert:
-//			if let newIndex = newIndexPath?.item {
-//				delegate?.storeInsert(object: object, at: newIndex)
-//			}
+//			delegate?.storeDidInsert(section: sectionInfo, at: sectionIndex)
 //		case .delete:
-//			if let oldIndex = indexPath?.item {
-//				delegate?.storeDelete(object: object, at: oldIndex)
-//			}
-//		case .move:
-//			if let oldIndex = indexPath?.item, let newIndex = newIndexPath?.item {
-//				delegate?.storeMove(object: object, from: oldIndex, to: newIndex)
-//			}
-//		case .update:
-//			if let oldIndex = indexPath?.item {
-//				delegate?.storeUpdate(object: object, at: oldIndex)
-//			}
-//		@unknown default:
-//			fatalError()
+//			delegate?.storeDidDelete(section: sectionInfo, at: sectionIndex)
+//		default:
+//			fatalError("other types are not supported ")
 //		}
 //	}
-	//#endif
-    
+	
 	//#if os(macOS)
 	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         print(#function)
@@ -153,7 +123,7 @@ extension Store {
             delegate?.storeDidReloadContent()
         } catch {
 			#if os(macOS)
-            NSApp.presentError(error)
+            //NSApp.presentError(error)
 			#endif
         }
         return objects
