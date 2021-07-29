@@ -96,16 +96,17 @@ public class CoreDataManager {
 
 extension CoreDataManager {
 
-	var newBackgroundContext: NSManagedObjectContext {
+	/// Create a new private managed object context
+	func newBackgroundContext() -> NSManagedObjectContext {
 		persistentContainer.newBackgroundContext()
 	}
 
-	func performForeground(task: @escaping (NSManagedObjectContext) -> Void) {
-		viewContext.perform { task(self.viewContext) }
+	func performForeground(block: @escaping (NSManagedObjectContext) -> Void) {
+		viewContext.perform { block(self.viewContext) }
 	}
 
-	func performBackground(task: @escaping (NSManagedObjectContext) -> Void) {
-		persistentContainer.performBackgroundTask(task)
+	func performBackground(block: @escaping (NSManagedObjectContext) -> Void) {
+		persistentContainer.performBackgroundTask(block)
 	}
 
 }
