@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-class ObjectFactory<T: NSManagedObject> {
+public class ObjectFactory<T: NSManagedObject> {
 	
 	private var viewContext: NSManagedObjectContext
 	var errorHandler: ((Error) -> ())?
@@ -21,7 +21,7 @@ class ObjectFactory<T: NSManagedObject> {
 
 extension ObjectFactory {
 	
-	func save() {
+	public func save() {
 		do {
 			try viewContext.save()
 		} catch {
@@ -75,3 +75,14 @@ extension ObjectFactory {
 		save()
 	}
 }
+
+//protocol Duplicable {
+//	associatedtype Element: NSManagedObject
+//	func duplicate() -> NSManagedObject
+//}
+//
+//extension ObjectFactory {
+//	func duplicate<T: Duplicable>(object: T) -> T {
+//		return object.duplicate()
+//	}
+//}
