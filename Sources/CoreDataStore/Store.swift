@@ -51,16 +51,16 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 		print(#function)
 	}
 	
-		public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-			switch type {
-			case .insert:
-				delegate?.storeDidInsert(section: sectionInfo, at: sectionIndex)
-			case .delete:
-				delegate?.storeDidDelete(section: sectionInfo, at: sectionIndex)
-			default:
-				fatalError("other types are not supported ")
-			}
+	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
+		switch type {
+		case .insert:
+			delegate?.storeDidInsert(section: sectionInfo, at: sectionIndex)
+		case .delete:
+			delegate?.storeDidDelete(section: sectionInfo, at: sectionIndex)
+		default:
+			fatalError("other types are not supported ")
 		}
+	}
 	
 	//#if os(macOS)
 	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
@@ -125,51 +125,4 @@ extension Store {
 	
 }
 
-extension Store {
-	
-	public func save() {
-		CoreDataManager.shared.save()
-	}
-	
-	@discardableResult
-	public func newObject(withSaving: Bool = true) -> T {
-		let newObject = T(context: viewContext)
-		if withSaving { save() }
-		return newObject
-	}
-	
-	public func set<Value>(value: Value,
-						   for keyPath: ReferenceWritableKeyPath<T, Value>,
-						   in object: T,
-						   withSaving: Bool = true) {
-		object[keyPath: keyPath] = value
-		if withSaving { save() }
-	}
-	
-	/// Create new NSManaagedObject and configure it with saving
-	@discardableResult
-	public func newObject(configure: (T) -> (), withSaving: Bool = true) -> T {
-		let newObject = T(context: viewContext)
-		configure(newObject)
-		if withSaving { save() }
-		return newObject
-	}
-	
-	public func delete(object: T, withSaving: Bool = true) {
-		viewContext.delete(object)
-		if withSaving { save() }
-	}
 
-
-}
-
-protocol Duplicable {
-	associatedtype Element: NSManagedObject
-	//func duplicate() -> NSManagedObject
-}
-
-extension Store {
-	func duplicate<T: Duplicable>(object: T) -> T {
-		return object.duplicate()
-	}
-}
