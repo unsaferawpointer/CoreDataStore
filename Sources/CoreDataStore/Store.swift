@@ -14,16 +14,25 @@ import UIKit
 
 import CoreData
 
+public protocol StoreDataSource {
+	
+	associatedtype T
+	var objects: [T] { get }
+	var numberOfObjects: Int { get }
+	var numberOfSections: Int { get }
+	func performFetch(with predicate: NSPredicate?) throws 
+}
+
 public protocol StoreDelegate : AnyObject {
+	func storeWillChangeContent()
 	func storeDidInsert(section: NSFetchedResultsSectionInfo, at index: Int)
 	func storeDidDelete(section: NSFetchedResultsSectionInfo, at index: Int)
-	func storeDidReloadContent()
-	func storeWillChangeContent()
 	func storeDelete(object: NSManagedObject, at index: Int)
 	func storeInsert(object: NSManagedObject, at index: Int)
 	func storeUpdate(object: NSManagedObject, at index: Int)
 	func storeMove(object: NSManagedObject, from fromIndex: Int, to toIndex: Int)
 	func storeDidChangeContent()
+	func storeDidReloadContent()
 }
 
 public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
@@ -99,7 +108,7 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	
 }
 
-extension Store {
+extension Store : StoreDataSource {
 	public var numberOfObjects : Int {
 		return fetchedResultController.fetchedObjects?.count ?? 0
 	}
@@ -107,20 +116,16 @@ extension Store {
 	public var numberOfSections: Int {
 		return fetchedResultController.sections?.count ?? 0
 	}
-}
 
-extension Store {
-	
 	public var objects: [T] {
 		return fetchedResultController.fetchedObjects ?? []
 	}
 	
 	/// Perform fetch and call 'storeDidReloadContent' of the delegate
-	public func performFetch(with predicate: NSPredicate?) throws -> [T]  {
+	public func performFetch(with predicate: NSPredicate?) throws {
 		fetchedResultController.fetchRequest.predicate = predicate
 		try fetchedResultController.performFetch()
 		delegate?.storeDidReloadContent()
-		return objects
 	}
 	
 }

@@ -10,7 +10,7 @@ import CoreData
 
 public class ObjectFactory<T: NSManagedObject> {
 	
-	private var viewContext: NSManagedObjectContext
+	private (set) var viewContext: NSManagedObjectContext
 	var errorHandler: ((Error) -> ())?
 	
 	public init(context: NSManagedObjectContext) {
