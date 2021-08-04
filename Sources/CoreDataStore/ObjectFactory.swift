@@ -50,6 +50,8 @@ extension ObjectFactory {
 			}
 		}
 		
+		NSLog("objectIDs = %@", objectsIDs)
+		
 		for objectID in objectsIDs {
 			let objectToUpdate = viewContext.object(with: objectID)
 			viewContext.refresh(objectToUpdate, mergeChanges: true)
