@@ -74,7 +74,7 @@ extension ObjectFactory {
 	public func set<Value>(value: Value,
 						   for keyPath: ReferenceWritableKeyPath<T, Value>,
 						   in object: T,
-						   updateRelationships: Bool) {
+						   updateRelationships: Bool = false) {
 		object[keyPath: keyPath] = value
 		updateRelations(of: object)
 		save()
