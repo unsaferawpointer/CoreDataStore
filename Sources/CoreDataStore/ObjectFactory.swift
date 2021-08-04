@@ -84,10 +84,10 @@ extension ObjectFactory {
 						   in object: T,
 						   updateRelationships: Bool = false) {
 		object[keyPath: keyPath] = value
+		save()
 		if updateRelationships {
 			updateRelations(of: object)
 		}
-		save()
 	}
 	
 	public func delete(object: T) {
