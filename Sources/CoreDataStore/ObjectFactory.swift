@@ -49,6 +49,12 @@ extension ObjectFactory {
 				objectsIDs.insert(objectID)
 			}
 		}
+		
+		for objectID in objectsIDs {
+			let objectToUpdate = viewContext.object(with: objectID)
+			viewContext.refresh(objectToUpdate, mergeChanges: true)
+		}
+		
 	}
 	
 	@discardableResult
