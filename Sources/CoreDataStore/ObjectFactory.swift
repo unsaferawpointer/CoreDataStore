@@ -36,6 +36,9 @@ extension ObjectFactory {
 		let toOneRelationshipKeys = object.toOneRelationshipKeys
 		let toManyRelationshipKeys = object.toManyRelationshipKeys
 		
+		print("toOneRelationshipKeys = \(toOneRelationshipKeys)")
+		print("toManyRelationshipKeys = \(toManyRelationshipKeys)")
+		
 		for key in toOneRelationshipKeys {
 			let relationshipObjectIDs = object.objectIDs(forRelationshipNamed: key)
 			for objectID in relationshipObjectIDs {
@@ -49,6 +52,8 @@ extension ObjectFactory {
 				objectsIDs.insert(objectID)
 			}
 		}
+		
+		print("objectIDs = \(objectsIDs)")
 		
 		NSLog("objectIDs = %@", objectsIDs)
 		
