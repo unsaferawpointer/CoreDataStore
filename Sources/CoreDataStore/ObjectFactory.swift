@@ -29,6 +29,28 @@ extension ObjectFactory {
 		}
 	}
 	
+	public func updateRelations(of object: T) {
+		
+		var objectsIDs : Set<NSManagedObjectID> = []
+		
+		let toOneRelationshipKeys = object.toOneRelationshipKeys
+		let toManyRelationshipKeys = object.toManyRelationshipKeys
+		
+		for key in toOneRelationshipKeys {
+			let relationshipObjectIDs = object.objectIDs(forRelationshipNamed: key)
+			for objectID in relationshipObjectIDs {
+				objectsIDs.insert(objectID)
+			}
+		}
+		
+		for key in toManyRelationshipKeys {
+			let relationshipObjectIDs = object.objectIDs(forRelationshipNamed: key)
+			for objectID in relationshipObjectIDs {
+				objectsIDs.insert(objectID)
+			}
+		}
+	}
+	
 	@discardableResult
 	public func newObject() -> T {
 		let newObject = T(context: viewContext)
@@ -49,8 +71,12 @@ extension ObjectFactory {
 		return newObject
 	}
 	
-	public func set<Value>(value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>, in object: T) {
+	public func set<Value>(value: Value,
+						   for keyPath: ReferenceWritableKeyPath<T, Value>,
+						   in object: T,
+						   updateRelationships: Bool) {
 		object[keyPath: keyPath] = value
+		updateRelations(of: object)
 		save()
 	}
 	
