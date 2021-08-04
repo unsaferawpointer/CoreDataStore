@@ -84,7 +84,9 @@ extension ObjectFactory {
 						   in object: T,
 						   updateRelationships: Bool = false) {
 		object[keyPath: keyPath] = value
-		updateRelations(of: object)
+		if updateRelationships {
+			updateRelations(of: object)
+		}
 		save()
 	}
 	
