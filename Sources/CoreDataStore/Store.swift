@@ -30,7 +30,7 @@ public protocol StoreDelegate : AnyObject {
 	func storeDelete(object: NSManagedObject, at index: Int)
 	func storeInsert(object: NSManagedObject, at index: Int)
 	func storeUpdate(object: NSManagedObject, at index: Int)
-	func storeMove(object: NSManagedObject, from fromIndex: Int, to toIndex: Int)
+	func storeMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int)
 	func storeDidChangeContent()
 	func storeDidReloadContent()
 }
