@@ -89,6 +89,7 @@ public class StoreChangesConsolidator<T : NSManagedObject> {
 	
 	public init(viewContext context: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor]) {
 		self.store = Store<T>.init(viewContext: context, sortBy: sortDescriptors)
+		self.store.delegate = self
 	}
 }
 
@@ -111,7 +112,7 @@ extension StoreChangesConsolidator : StoreDataSource {
 	}
 }
 
-extension StoreChangesConsolidator : StoreDelegate where T == NSManagedObject {
+extension StoreChangesConsolidator : StoreDelegate {
 	
 	public func storeWillChangeContent() {
 		delegate?.storeChangesConsolidatorWillChangeContent()
