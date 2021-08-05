@@ -42,7 +42,7 @@ struct ChangesStore {
 	}
 	
 	mutating func didInsert(object: NSManagedObject, at index: Int) {
-		objectsDeletion.append((object: object, index: index))
+		objectsInsertion.append((object: object, index: index))
 	}
 	
 	mutating func didUpdate(object: NSManagedObject, at index: Int) {
