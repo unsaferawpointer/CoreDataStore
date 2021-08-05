@@ -79,7 +79,7 @@ struct ChangesStore {
 }
 
 /// It is wrapper of the Store class. The class collect all changes to four types set: delete, insert, update and move
-class StoreChangesConsolidator<T : NSManagedObject> {
+public class StoreChangesConsolidator<T : NSManagedObject> {
 	
 	weak var delegate: StoreChangesConsolidatorDelegate?
 	
@@ -93,58 +93,58 @@ class StoreChangesConsolidator<T : NSManagedObject> {
 
 extension StoreChangesConsolidator : StoreDataSource {
 	
-	func performFetch(with predicate: NSPredicate?) throws {
+	public func performFetch(with predicate: NSPredicate?) throws {
 		try store.performFetch(with: predicate)
 	}
 	
-	var objects: [T] {
+	public var objects: [T] {
 		return store.objects
 	}
 	
-	var numberOfObjects: Int {
+	public var numberOfObjects: Int {
 		return store.numberOfObjects
 	}
 	
-	var numberOfSections: Int {
+	public var numberOfSections: Int {
 		return store.numberOfSections
 	}
 }
 
 extension StoreChangesConsolidator : StoreDelegate where T == NSManagedObject {
 	
-	func storeWillChangeContent() {
+	public func storeWillChangeContent() {
 		delegate?.storeChangesConsolidatorWillChangeContent()
 	}
 	
-	func storeDidInsert(section: NSFetchedResultsSectionInfo, at index: Int) {
+	public func storeDidInsert(section: NSFetchedResultsSectionInfo, at index: Int) {
 		changesStore.didInsert(section: section, at: index)
 	}
 	
-	func storeDidDelete(section: NSFetchedResultsSectionInfo, at index: Int) {
+	public func storeDidDelete(section: NSFetchedResultsSectionInfo, at index: Int) {
 		changesStore.didDelete(section: section, at: index)
 	}
 	
-	func storeDidReloadContent() {
+	public func storeDidReloadContent() {
 		delegate?.storeChangesConsolidatorDidReloadContent()
 	}
 	
-	func storeDelete(object: NSManagedObject, at index: Int) {
+	public func storeDelete(object: NSManagedObject, at index: Int) {
 		changesStore.didDelete(object: object, at: index)
 	}
 	
-	func storeInsert(object: NSManagedObject, at index: Int) {
+	public func storeInsert(object: NSManagedObject, at index: Int) {
 		changesStore.didInsert(object: object, at: index)
 	}
 	
-	func storeUpdate(object: NSManagedObject, at index: Int) {
+	public func storeUpdate(object: NSManagedObject, at index: Int) {
 		changesStore.didUpdate(object: object, at: index)
 	}
 	
-	func storeMove(object: NSManagedObject, from fromIndex: Int, to toIndex: Int) {
+	public func storeMove(object: NSManagedObject, from fromIndex: Int, to toIndex: Int) {
 		changesStore.didMove(object: object, from: fromIndex, to: toIndex)
 	}
 	
-	func storeDidChangeContent() {
+	public func storeDidChangeContent() {
 		
 		delegate?.storeChangesConsolidatorDidDelete(objects: changesStore.objectsDeletion)
 		delegate?.storeChangesConsolidatorDidDelete(sections: changesStore.sectionsDeletion)
