@@ -7,7 +7,7 @@
 
 import CoreData
 
-protocol StoreChangesConsolidatorDelegate : AnyObject {
+public protocol StoreChangesConsolidatorDelegate : AnyObject {
 	func storeChangesConsolidatorDidReloadContent()
 	func storeChangesConsolidatorWillChangeContent()
 	func storeChangesConsolidatorDidInsert(objects: [(object: NSManagedObject, index: Int)])
