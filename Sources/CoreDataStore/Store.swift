@@ -124,7 +124,7 @@ extension Store : StoreDataSource {
 	}
 	
 	/// Perform fetch and call 'storeDidReloadContent' of the delegate
-	public func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws {
+	public func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) {
 		fetchedResultController.fetchRequest.predicate = predicate
 		fetchedResultController.fetchRequest.sortDescriptors = sortDescriptors
 		do {
