@@ -42,6 +42,8 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	private var fetchedResultController: NSFetchedResultsController<T>
 	private var viewContext: NSManagedObjectContext
 	
+	public var errorHandler: ((Error) -> ())?
+	
 	public init(viewContext: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor]) {
 		self.viewContext = viewContext
 		let fetchRequest: NSFetchRequest<T> = NSFetchRequest<T>.init(entityName: T.className())
@@ -125,7 +127,11 @@ extension Store : StoreDataSource {
 	public func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws {
 		fetchedResultController.fetchRequest.predicate = predicate
 		fetchedResultController.fetchRequest.sortDescriptors = sortDescriptors
-		try fetchedResultController.performFetch()
+		do {
+			try fetchedResultController.performFetch()
+		} catch {
+			errorHandler?(error)
+		}
 		delegate?.storeDidReloadContent()
 	}
 	
