@@ -20,7 +20,7 @@ public protocol StoreDataSource {
 	var objects: [T] { get }
 	var numberOfObjects: Int { get }
 	var numberOfSections: Int { get }
-	func performFetch(with predicate: NSPredicate?) throws 
+	func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws 
 }
 
 public protocol StoreDelegate : AnyObject {
@@ -122,8 +122,9 @@ extension Store : StoreDataSource {
 	}
 	
 	/// Perform fetch and call 'storeDidReloadContent' of the delegate
-	public func performFetch(with predicate: NSPredicate?) throws {
+	public func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws {
 		fetchedResultController.fetchRequest.predicate = predicate
+		fetchedResultController.fetchRequest.sortDescriptors = sortDescriptors
 		try fetchedResultController.performFetch()
 		delegate?.storeDidReloadContent()
 	}

@@ -94,8 +94,8 @@ public class StoreChangesConsolidator<T : NSManagedObject> {
 
 extension StoreChangesConsolidator : StoreDataSource {
 	
-	public func performFetch(with predicate: NSPredicate?) throws {
-		try store.performFetch(with: predicate)
+	public func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws {
+		try store.performFetch(with: predicate, sortDescriptors: sortDescriptors)
 	}
 	
 	public var objects: [T] {
