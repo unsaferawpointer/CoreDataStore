@@ -86,7 +86,7 @@ public class StoreChangesConsolidator<T : NSManagedObject> {
 	private var store: Store<T>
 	private var changesStore = ChangesStore()
 	
-	init(viewContext context: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor]) {
+	public init(viewContext context: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor]) {
 		self.store = Store<T>.init(viewContext: context, sortBy: sortDescriptors)
 	}
 }
