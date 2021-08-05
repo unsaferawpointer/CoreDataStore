@@ -16,6 +16,7 @@ public protocol StoreChangesConsolidatorDelegate : AnyObject {
 	func storeChangesConsolidatorDidMove(objects: [(object: NSManagedObject, from: Int, to: Int)])
 	func storeChangesConsolidatorDidDelete(sections: [(object: NSFetchedResultsSectionInfo, index: Int)])
 	func storeChangesConsolidatorDidInsert(sections: [(object: NSFetchedResultsSectionInfo, index: Int)])
+	func storeChangesConsolidatorDidChangeContent()
 }
 
 struct ChangesStore {
@@ -81,7 +82,7 @@ struct ChangesStore {
 /// It is wrapper of the Store class. The class collect all changes to four types set: delete, insert, update and move
 public class StoreChangesConsolidator<T : NSManagedObject> {
 	
-	weak var delegate: StoreChangesConsolidatorDelegate?
+	public weak var delegate: StoreChangesConsolidatorDelegate?
 	
 	private var store: Store<T>
 	private var changesStore = ChangesStore()
@@ -152,7 +153,7 @@ extension StoreChangesConsolidator : StoreDelegate where T == NSManagedObject {
 		delegate?.storeChangesConsolidatorDidInsert(objects: changesStore.objectsInsertion)
 		delegate?.storeChangesConsolidatorDidMove(objects: changesStore.objectsMoving)
 		delegate?.storeChangesConsolidatorDidUpdate(objects: changesStore.objectsUpdating)
-		
+		delegate?.storeChangesConsolidatorDidChangeContent()
 		changesStore.reset()
 	}
 	
