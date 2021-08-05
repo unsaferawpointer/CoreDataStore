@@ -127,6 +127,7 @@ extension StoreChangesConsolidator : StoreDelegate {
 	}
 	
 	public func storeDidReloadContent() {
+		changesStore.reset()
 		delegate?.storeChangesConsolidatorDidReloadContent()
 	}
 	
@@ -143,7 +144,9 @@ extension StoreChangesConsolidator : StoreDelegate {
 	}
 	
 	public func storeMove(object: NSManagedObject, from fromIndex: Int, to toIndex: Int) {
-		changesStore.didMove(object: object, from: fromIndex, to: toIndex)
+		changesStore.didDelete(object: object, at: fromIndex)
+		changesStore.didInsert(object: object, at: toIndex)
+		//changesStore.didMove(object: object, from: fromIndex, to: toIndex)
 	}
 	
 	public func storeDidChangeContent() {
