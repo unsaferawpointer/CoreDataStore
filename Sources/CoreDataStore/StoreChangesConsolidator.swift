@@ -10,42 +10,75 @@ import CoreData
 protocol StoreChangesConsolidatorDelegate : AnyObject {
 	func storeChangesConsolidatorDidReloadContent()
 	func storeChangesConsolidatorWillChangeContent()
-	func storeChangesConsolidatorDidInsert(section: NSFetchedResultsSectionInfo, at index: Int)
-	func storeChangesConsolidatorDidChangeContent()
+	func storeChangesConsolidatorDidInsert(objects: [(object: NSManagedObject, index: Int)])
+	func storeChangesConsolidatorDidDelete(objects: [(object: NSManagedObject, index: Int)])
+	func storeChangesConsolidatorDidUpdate(objects: [(object: NSManagedObject, index: Int)])
+	func storeChangesConsolidatorDidMove(objects: [(object: NSManagedObject, from: Int, to: Int)])
+	func storeChangesConsolidatorDidDelete(sections: [(object: NSFetchedResultsSectionInfo, index: Int)])
+	func storeChangesConsolidatorDidInsert(sections: [(object: NSFetchedResultsSectionInfo, index: Int)])
 }
 
 struct ChangesStore {
 	
-	enum ChangeType {
-		case insert(at: Int)
-		case delete(at: Int)
-		case update(at: Int)
-		case move(from: Int, to: Int)
+	var sectionsInsertion	: [(object: NSFetchedResultsSectionInfo, index: Int)] = []
+	var sectionsDeletion	: [(object: NSFetchedResultsSectionInfo, index: Int)] = []
+	
+	var objectsInsertion	: [(object: NSManagedObject, index: Int)] = []
+	var objectsDeletion		: [(object: NSManagedObject, index: Int)] = []
+	var objectsUpdating		: [(object: NSManagedObject, index: Int)] = []
+	var objectsMoving		: [(object: NSManagedObject, from: Int, to: Int)] = []
+	
+	mutating func didInsert(section: NSFetchedResultsSectionInfo, at index: Int) {
+		sectionsInsertion.append((object: section, index: index))
 	}
 	
-	struct Change<T> {
-		var type: ChangeType
-		var object: T
+	mutating func didDelete(section: NSFetchedResultsSectionInfo, at index: Int) {
+		sectionsDeletion.append((object: section, index: index))
 	}
 	
-	var sectionsChanges	: [Change<NSFetchedResultsSectionInfo>] = []
-	var objectsChanges	: [Change<NSManagedObject>] = []
-	
-	mutating func add(change : Change<NSFetchedResultsSectionInfo>) {
-		sectionsChanges.append(change)
+	mutating func didDelete(object: NSManagedObject, at index: Int) {
+		objectsDeletion.append((object: object, index: index))
 	}
 	
-	mutating func add(change : Change<NSManagedObject>) {
-		objectsChanges.append(change)
+	mutating func didInsert(object: NSManagedObject, at index: Int) {
+		objectsDeletion.append((object: object, index: index))
+	}
+	
+	mutating func didUpdate(object: NSManagedObject, at index: Int) {
+		objectsUpdating.append((object: object, index: index))
+	}
+	
+	mutating func didMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int) {
+		objectsMoving.append((object: object, from: oldIndex, to: newIndex))
+	}
+	
+	func objectsInsertionIndexSet() -> IndexSet {
+		let array = objectsInsertion.compactMap { $0.index }
+		return IndexSet(array)
+	}
+	
+	func objectsDeletionIndexSet() -> IndexSet {
+		let array = objectsDeletion.compactMap { $0.index }
+		return IndexSet(array)
+	}
+	
+	func objectsUpdatingIndexSet() -> IndexSet {
+		let array = objectsUpdating.compactMap { $0.index }
+		return IndexSet(array)
 	}
 	
 	mutating func reset() {
-		sectionsChanges.removeAll()
-		objectsChanges.removeAll()
+		sectionsInsertion.removeAll()
+		sectionsDeletion.removeAll()
+		objectsInsertion.removeAll()
+		objectsDeletion.removeAll()
+		objectsUpdating.removeAll()
+		objectsMoving.removeAll()
 	}
 	
 }
 
+/// It is wrapper of the Store class. The class collect all changes to four types set: delete, insert, update and move
 class StoreChangesConsolidator<T : NSManagedObject> {
 	
 	weak var delegate: StoreChangesConsolidatorDelegate?
@@ -77,22 +110,18 @@ extension StoreChangesConsolidator : StoreDataSource {
 	}
 }
 
-extension StoreChangesConsolidator : StoreDelegate {
-	
-	typealias Change = ChangesStore.Change
+extension StoreChangesConsolidator : StoreDelegate where T == NSManagedObject {
 	
 	func storeWillChangeContent() {
 		delegate?.storeChangesConsolidatorWillChangeContent()
 	}
 	
 	func storeDidInsert(section: NSFetchedResultsSectionInfo, at index: Int) {
-		let change = Change(type: .insert(at: index), object: section)
-		changesStore.add(change: change)
+		changesStore.didInsert(section: section, at: index)
 	}
 	
 	func storeDidDelete(section: NSFetchedResultsSectionInfo, at index: Int) {
-		let change = Change(type: .delete(at: index), object: section)
-		changesStore.add(change: change)
+		changesStore.didDelete(section: section, at: index)
 	}
 	
 	func storeDidReloadContent() {
@@ -100,26 +129,30 @@ extension StoreChangesConsolidator : StoreDelegate {
 	}
 	
 	func storeDelete(object: NSManagedObject, at index: Int) {
-		let change = Change(type: .delete(at: index), object: object)
-		changesStore.add(change: change)
+		changesStore.didDelete(object: object, at: index)
 	}
 	
 	func storeInsert(object: NSManagedObject, at index: Int) {
-		let change = Change(type: .insert(at: index), object: object)
-		changesStore.add(change: change)
+		changesStore.didInsert(object: object, at: index)
 	}
 	
 	func storeUpdate(object: NSManagedObject, at index: Int) {
-		let change = Change(type: .update(at: index), object: object)
-		changesStore.add(change: change)
+		changesStore.didUpdate(object: object, at: index)
 	}
 	
 	func storeMove(object: NSManagedObject, from fromIndex: Int, to toIndex: Int) {
-		let change = Change(type: .move(from: fromIndex, to: toIndex), object: object)
-		changesStore.add(change: change)
+		changesStore.didMove(object: object, from: fromIndex, to: toIndex)
 	}
 	
 	func storeDidChangeContent() {
+		
+		delegate?.storeChangesConsolidatorDidDelete(objects: changesStore.objectsDeletion)
+		delegate?.storeChangesConsolidatorDidDelete(sections: changesStore.sectionsDeletion)
+		delegate?.storeChangesConsolidatorDidInsert(sections: changesStore.sectionsInsertion)
+		delegate?.storeChangesConsolidatorDidInsert(objects: changesStore.objectsInsertion)
+		delegate?.storeChangesConsolidatorDidMove(objects: changesStore.objectsMoving)
+		delegate?.storeChangesConsolidatorDidUpdate(objects: changesStore.objectsUpdating)
+		
 		changesStore.reset()
 	}
 	
