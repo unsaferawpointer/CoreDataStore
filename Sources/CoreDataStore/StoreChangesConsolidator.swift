@@ -5,6 +5,10 @@
 //  Created by Anton Cherkasov on 30.07.2021.
 //
 
+#if os(macOS)
+import AppKit
+#endif
+
 import CoreData
 
 public protocol StoreChangesConsolidatorDelegate : AnyObject {
@@ -17,6 +21,7 @@ public protocol StoreChangesConsolidatorDelegate : AnyObject {
 	func storeChangesConsolidatorDidDelete(sections: [(object: NSFetchedResultsSectionInfo, index: Int)])
 	func storeChangesConsolidatorDidInsert(sections: [(object: NSFetchedResultsSectionInfo, index: Int)])
 	func storeChangesConsolidatorDidChangeContent()
+	func storeDidChangeContent(with snapshot: NSDiffableDataSourceSnapshotReference)
 }
 
 struct ChangesStore {
@@ -98,6 +103,10 @@ extension StoreChangesConsolidator : StoreDataSource {
 }
 
 extension StoreChangesConsolidator : StoreDelegate {
+	
+	public func storeDidChangeContent(with snapshot: NSDiffableDataSourceSnapshotReference) {
+		delegate?.storeDidChangeContent(with: snapshot)
+	}
 	
 	public func storeWillChangeContent() {
 		changesStore.reset()
