@@ -129,9 +129,9 @@ extension StoreChangesConsolidator : StoreDelegate {
 	}
 	
 	public func storeMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int) {
-		changesStore.didDelete(object: object, at: oldIndex)
-		changesStore.didInsert(object: object, at: newIndex)
-		//changesStore.didMove(object: object, from: fromIndex, to: toIndex)
+//		changesStore.didDelete(object: object, at: oldIndex)
+//		changesStore.didInsert(object: object, at: newIndex)
+		changesStore.didMove(object: object, from: oldIndex, to: newIndex)
 	}
 	
 	public func storeDidChangeContent() {
