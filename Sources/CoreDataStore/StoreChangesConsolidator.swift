@@ -100,7 +100,7 @@ extension StoreChangesConsolidator : StoreDataSource {
 extension StoreChangesConsolidator : StoreDelegate {
 	
 	public func storeWillChangeContent() {
-		
+		changesStore.reset()
 	}
 	
 	public func storeDidInsert(section: NSFetchedResultsSectionInfo, at index: Int) {

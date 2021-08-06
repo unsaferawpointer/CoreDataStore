@@ -47,7 +47,6 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	public init(viewContext: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor]) {
 		self.viewContext = viewContext
 		let fetchRequest: NSFetchRequest<T> = NSFetchRequest<T>.init(entityName: T.className())
-		
 		fetchRequest.sortDescriptors = sortDescriptors
 		
 		self.fetchedResultController = NSFetchedResultsController.init(fetchRequest: fetchRequest, managedObjectContext: viewContext, sectionNameKeyPath: nil, cacheName: nil)
