@@ -82,18 +82,22 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 		}
 		switch type {
 		case .insert:
+			print(".insert")
 			if let newIndex = newIndexPath?.item {
 				delegate?.storeInsert(object: object, at: newIndex)
 			}
 		case .delete:
+			print(".delete")
 			if let oldIndex = indexPath?.item {
 				delegate?.storeDelete(object: object, at: oldIndex)
 			}
 		case .move:
+			print(".move")
 			if let oldIndex = indexPath?.item, let newIndex = newIndexPath?.item {
 				delegate?.storeMove(object: object, from: oldIndex, to: newIndex)
 			}
 		case .update:
+			print(".update")
 			if let oldIndex = indexPath?.item {
 				delegate?.storeUpdate(object: object, at: oldIndex)
 			}
