@@ -13,7 +13,7 @@ public protocol StoreChangesConsolidatorDelegate : AnyObject {
 	func storeChangesConsolidatorDidInsert(objects: [(object: NSManagedObject, index: Int)])
 	func storeChangesConsolidatorDidDelete(objects: [(object: NSManagedObject, index: Int)])
 	func storeChangesConsolidatorDidUpdate(objects: [(object: NSManagedObject, index: Int)])
-	func storeChangesConsolidatorDidMove(objects: [(object: NSManagedObject, from: Int, to: Int)])
+//	func storeChangesConsolidatorDidMove(objects: [(object: NSManagedObject, from: Int, to: Int)])
 	func storeChangesConsolidatorDidDelete(sections: [(object: NSFetchedResultsSectionInfo, index: Int)])
 	func storeChangesConsolidatorDidInsert(sections: [(object: NSFetchedResultsSectionInfo, index: Int)])
 	func storeChangesConsolidatorDidChangeContent()
@@ -129,8 +129,8 @@ extension StoreChangesConsolidator : StoreDelegate {
 	}
 	
 	public func storeMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int) {
-//		changesStore.didDelete(object: object, at: oldIndex)
-//		changesStore.didInsert(object: object, at: newIndex)
+		changesStore.didDelete(object: object, at: oldIndex)
+		changesStore.didInsert(object: object, at: newIndex)
 		changesStore.didMove(object: object, from: oldIndex, to: newIndex)
 	}
 	
@@ -142,7 +142,7 @@ extension StoreChangesConsolidator : StoreDelegate {
 		delegate?.storeChangesConsolidatorDidUpdate(objects: changesStore.objectsUpdating)
 		delegate?.storeChangesConsolidatorDidInsert(sections: changesStore.sectionsInsertion)
 		delegate?.storeChangesConsolidatorDidInsert(objects: changesStore.objectsInsertion)
-		delegate?.storeChangesConsolidatorDidMove(objects: changesStore.objectsMoving)
+//		delegate?.storeChangesConsolidatorDidMove(objects: changesStore.objectsMoving)
 		delegate?.storeChangesConsolidatorDidChangeContent()
 		changesStore.reset()
 	}
