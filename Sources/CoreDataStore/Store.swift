@@ -33,6 +33,7 @@ public protocol StoreDelegate : AnyObject {
 	func storeMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int)
 	func storeDidChangeContent()
 	func storeDidReloadContent()
+	func storeDidChangeContent(with snapshot: NSDiffableDataSourceSnapshotReference)
 }
 
 public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
@@ -59,6 +60,10 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		delegate?.storeWillChangeContent()
 		print(#function)
+	}
+	
+	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+		delegate?.storeDidChangeContent(with: snapshot)
 	}
 	
 	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
