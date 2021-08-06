@@ -53,21 +53,6 @@ struct ChangesStore {
 		objectsMoving.append((object: object, from: oldIndex, to: newIndex))
 	}
 	
-	func objectsInsertionIndexSet() -> IndexSet {
-		let array = objectsInsertion.compactMap { $0.index }
-		return IndexSet(array)
-	}
-	
-	func objectsDeletionIndexSet() -> IndexSet {
-		let array = objectsDeletion.compactMap { $0.index }
-		return IndexSet(array)
-	}
-	
-	func objectsUpdatingIndexSet() -> IndexSet {
-		let array = objectsUpdating.compactMap { $0.index }
-		return IndexSet(array)
-	}
-	
 	mutating func reset() {
 		sectionsInsertion.removeAll()
 		sectionsDeletion.removeAll()
@@ -153,10 +138,10 @@ extension StoreChangesConsolidator : StoreDelegate {
 		
 		delegate?.storeChangesConsolidatorDidDelete(objects: changesStore.objectsDeletion)
 		delegate?.storeChangesConsolidatorDidDelete(sections: changesStore.sectionsDeletion)
+		delegate?.storeChangesConsolidatorDidUpdate(objects: changesStore.objectsUpdating)
 		delegate?.storeChangesConsolidatorDidInsert(sections: changesStore.sectionsInsertion)
 		delegate?.storeChangesConsolidatorDidInsert(objects: changesStore.objectsInsertion)
 		delegate?.storeChangesConsolidatorDidMove(objects: changesStore.objectsMoving)
-		delegate?.storeChangesConsolidatorDidUpdate(objects: changesStore.objectsUpdating)
 		delegate?.storeChangesConsolidatorDidChangeContent()
 		changesStore.reset()
 	}
