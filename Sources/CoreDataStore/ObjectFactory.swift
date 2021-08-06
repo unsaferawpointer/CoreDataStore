@@ -113,8 +113,9 @@ extension ObjectFactory {
 	public func set<Value>(value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>, to objects: [T]) {
 		objects.forEach {
 			$0[keyPath: keyPath] = value
+			save()
 		}
-		save()
+		
 	}
 }
 
