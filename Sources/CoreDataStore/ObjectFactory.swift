@@ -105,8 +105,9 @@ extension ObjectFactory {
 	public func delete(objects: [T]) {
 		objects.forEach{
 			viewContext.delete($0)
+			save()
 		}
-		save()
+		
 	}
 	
 	public func set<Value>(value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>, to objects: [T]) {
