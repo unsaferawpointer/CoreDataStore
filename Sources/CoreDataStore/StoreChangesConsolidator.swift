@@ -100,7 +100,7 @@ extension StoreChangesConsolidator : StoreDataSource {
 extension StoreChangesConsolidator : StoreDelegate {
 	
 	public func storeWillChangeContent() {
-		delegate?.storeChangesConsolidatorWillChangeContent()
+		
 	}
 	
 	public func storeDidInsert(section: NSFetchedResultsSectionInfo, at index: Int) {
@@ -128,14 +128,15 @@ extension StoreChangesConsolidator : StoreDelegate {
 		changesStore.didUpdate(object: object, at: index)
 	}
 	
-	public func storeMove(object: NSManagedObject, from fromIndex: Int, to toIndex: Int) {
-		changesStore.didDelete(object: object, at: fromIndex)
-		changesStore.didInsert(object: object, at: toIndex)
+	public func storeMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int) {
+		changesStore.didDelete(object: object, at: oldIndex)
+		changesStore.didInsert(object: object, at: newIndex)
 		//changesStore.didMove(object: object, from: fromIndex, to: toIndex)
 	}
 	
 	public func storeDidChangeContent() {
 		
+		delegate?.storeChangesConsolidatorWillChangeContent()
 		delegate?.storeChangesConsolidatorDidDelete(objects: changesStore.objectsDeletion)
 		delegate?.storeChangesConsolidatorDidDelete(sections: changesStore.sectionsDeletion)
 		delegate?.storeChangesConsolidatorDidUpdate(objects: changesStore.objectsUpdating)
