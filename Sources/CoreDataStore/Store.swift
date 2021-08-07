@@ -62,9 +62,9 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 		print(#function)
 	}
 	
-	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
-		delegate?.storeDidChangeContent(with: snapshot)
-	}
+//	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+//		delegate?.storeDidChangeContent(with: snapshot)
+//	}
 	
 	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
 		switch type {
