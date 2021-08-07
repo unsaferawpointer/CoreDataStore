@@ -78,42 +78,54 @@ extension ObjectFactory {
 		return newObject
 	}
 	
-	public func newObject(configurationBlock: (T) -> ()) -> T {
+	public func newObject(configurationBlock: (T) -> ()) {
+		viewContext.performAndWait {
 		let newObject = self.newObject()
 		configurationBlock(newObject)
-		return newObject
+			save()
+		}
 	}
 	
 	public func set<Value>(value: Value,
 						   for keyPath: ReferenceWritableKeyPath<T, Value>,
 						   in object: T,
 						   updateRelationships: Bool = false) {
+		viewContext.performAndWait {
 		object[keyPath: keyPath] = value
 		save()
+		}
 //		if updateRelationships {
 //			updateRelations(of: object)
 //		}
 	}
 	
 	public func delete(object: T) {
+		viewContext.performAndWait {
 		viewContext.delete(object)
 		save()
+		}
 	}
 	
 	// Batch operation
 	
 	public func delete(objects: [T]) {
+		viewContext.performAndWait {
 		objects.forEach{
 			viewContext.delete($0)
 		}
 		save()
+		}
 	}
 	
 	public func set<Value>(value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>, to objects: [T]) {
-		objects.forEach {
-			$0[keyPath: keyPath] = value
+		viewContext.performAndWait {
+			objects.forEach {
+				$0[keyPath: keyPath] = value
+			}
+			save()
 		}
-		save()
+		
+		
 	}
 }
 
