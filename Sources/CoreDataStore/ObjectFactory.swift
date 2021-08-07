@@ -90,9 +90,9 @@ extension ObjectFactory {
 						   updateRelationships: Bool = false) {
 		object[keyPath: keyPath] = value
 		save()
-		if updateRelationships {
-			updateRelations(of: object)
-		}
+//		if updateRelationships {
+//			updateRelations(of: object)
+//		}
 	}
 	
 	public func delete(object: T) {
