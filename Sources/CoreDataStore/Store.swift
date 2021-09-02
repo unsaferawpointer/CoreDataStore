@@ -15,7 +15,6 @@ import UIKit
 import CoreData
 
 public protocol StoreDataSource {
-	
 	associatedtype T
 	var objects: [T] { get }
 	var numberOfObjects: Int { get }
@@ -25,15 +24,12 @@ public protocol StoreDataSource {
 
 public protocol StoreDelegate : AnyObject {
 	func storeWillChangeContent()
-	func storeDidInsert(section: NSFetchedResultsSectionInfo, at index: Int)
-	func storeDidDelete(section: NSFetchedResultsSectionInfo, at index: Int)
 	func storeDelete(object: NSManagedObject, at index: Int)
 	func storeInsert(object: NSManagedObject, at index: Int)
 	func storeUpdate(object: NSManagedObject, at index: Int)
 	func storeMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int)
 	func storeDidChangeContent()
 	func storeDidReloadContent()
-	func storeDidChangeContent(with snapshot: NSDiffableDataSourceSnapshotReference)
 }
 
 public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
@@ -59,49 +55,26 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	
 	public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		delegate?.storeWillChangeContent()
-		print(#function)
 	}
 	
-//	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
-//		delegate?.storeDidChangeContent(with: snapshot)
-//	}
-	
-	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
-		switch type {
-		case .insert:
-			delegate?.storeDidInsert(section: sectionInfo, at: sectionIndex)
-		case .delete:
-			delegate?.storeDidDelete(section: sectionInfo, at: sectionIndex)
-		default:
-			fatalError("other types are not supported ")
-		}
-	}
-	
-	//#if os(macOS)
 	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-		print(#function)
-		print("oldPath = \(indexPath) newPath = \(newIndexPath)")
 		guard let object = anObject as? T else {
 			fatalError("\(anObject) is not \(T.className())")
 		}
 		switch type {
 		case .insert:
-			print(".insert")
 			if let newIndex = newIndexPath?.item {
 				delegate?.storeInsert(object: object, at: newIndex)
 			}
 		case .delete:
-			print(".delete")
 			if let oldIndex = indexPath?.item {
 				delegate?.storeDelete(object: object, at: oldIndex)
 			}
 		case .move:
-			print(".move")
 			if let oldIndex = indexPath?.item, let newIndex = newIndexPath?.item {
 				delegate?.storeMove(object: object, from: oldIndex, to: newIndex)
 			}
 		case .update:
-			print(".update")
 			if let oldIndex = indexPath?.item {
 				delegate?.storeUpdate(object: object, at: oldIndex)
 			}
@@ -109,11 +82,9 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 			fatalError()
 		}
 	}
-	//#endif
 	
 	public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		delegate?.storeDidChangeContent()
-		print(#function)
 	}
 	
 }
@@ -133,6 +104,9 @@ extension Store : StoreDataSource {
 	
 	/// Perform fetch and call 'storeDidReloadContent' of the delegate
 	public func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) {
+		defer {
+			delegate?.storeDidReloadContent()
+		}
 		fetchedResultController.fetchRequest.predicate = predicate
 		fetchedResultController.fetchRequest.sortDescriptors = sortDescriptors
 		do {
@@ -140,7 +114,7 @@ extension Store : StoreDataSource {
 		} catch {
 			errorHandler?(error)
 		}
-		delegate?.storeDidReloadContent()
+		
 	}
 	
 }

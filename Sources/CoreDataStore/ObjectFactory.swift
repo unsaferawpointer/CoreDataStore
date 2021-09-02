@@ -8,12 +8,13 @@
 import Foundation
 import CoreData
 
+
 public class ObjectFactory<T: NSManagedObject> {
 	
 	public private (set) var viewContext: NSManagedObjectContext
 	var errorHandler: ((Error) -> ())?
 	
-	public init(context: NSManagedObjectContext) {
+	public init(viewContext context: NSManagedObjectContext) {
 		self.viewContext = context
 	}
 	
@@ -22,46 +23,26 @@ public class ObjectFactory<T: NSManagedObject> {
 extension ObjectFactory {
 	
 	public func save() {
+		guard !viewContext.hasChanges else {
+			return
+		}
 		do {
 			try viewContext.save()
 		} catch {
-			errorHandler?(error)
+			DispatchQueue.main.async {
+				self.errorHandler?(error)
+			}
 		}
+		
 	}
 	
-	public func updateRelations(of object: T) {
-		
-		var objectsIDs : Set<NSManagedObjectID> = []
-		
-		let toOneRelationshipKeys = object.toOneRelationshipKeys
-		let toManyRelationshipKeys = object.toManyRelationshipKeys
-		
-		print("toOneRelationshipKeys = \(toOneRelationshipKeys)")
-		print("toManyRelationshipKeys = \(toManyRelationshipKeys)")
-		
-		for key in toOneRelationshipKeys {
-			let relationshipObjectIDs = object.objectIDs(forRelationshipNamed: key)
-			for objectID in relationshipObjectIDs {
-				objectsIDs.insert(objectID)
-			}
+	/// Perform block for objects in the same context
+	/// - Warning: Objects must has same NSManagedObjectContext
+	private func perform<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T {
+		for object in objects {
+			block(object)
 		}
-		
-		for key in toManyRelationshipKeys {
-			let relationshipObjectIDs = object.objectIDs(forRelationshipNamed: key)
-			for objectID in relationshipObjectIDs {
-				objectsIDs.insert(objectID)
-			}
-		}
-		
-		print("objectIDs = \(objectsIDs)")
-		
-		NSLog("objectIDs = %@", objectsIDs)
-		
-		for objectID in objectsIDs {
-			let objectToUpdate = viewContext.object(with: objectID)
-			viewContext.refresh(objectToUpdate, mergeChanges: true)
-		}
-		
+		save()
 	}
 	
 	@discardableResult
@@ -71,6 +52,7 @@ extension ObjectFactory {
 		return newObject
 	}
 	
+	@discardableResult
 	public func newObject<Value>(with value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>) -> T {
 		let newObject = T(context: viewContext)
 		newObject[keyPath: keyPath] = value
@@ -78,64 +60,59 @@ extension ObjectFactory {
 		return newObject
 	}
 	
-	public func newObject(configurationBlock: (T) -> ()) {
-		viewContext.performAndWait {
-		let newObject = self.newObject()
+	@discardableResult
+	public func newObject(configurationBlock: (T) -> ()) -> T {
+		let newObject = T(context: viewContext)
 		configurationBlock(newObject)
-			save()
-		}
+		save()
+		return newObject
 	}
 	
 	public func set<Value>(value: Value,
 						   for keyPath: ReferenceWritableKeyPath<T, Value>,
-						   in object: T,
-						   updateRelationships: Bool = false) {
-		viewContext.performAndWait {
+						   in object: T) {
 		object[keyPath: keyPath] = value
 		save()
-		}
-//		if updateRelationships {
-//			updateRelations(of: object)
-//		}
 	}
 	
 	public func delete(object: T) {
-		viewContext.performAndWait {
 		viewContext.delete(object)
 		save()
-		}
 	}
 	
-	// Batch operation
+	// Batch operations
 	
-	public func delete(objects: [T]) {
-		viewContext.performAndWait {
+	public func delete<C: Sequence>(objects: C) where C.Element == T {
 		objects.forEach{
 			viewContext.delete($0)
 		}
 		save()
-		}
 	}
 	
-	public func set<Value>(value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>, to objects: [T]) {
-		viewContext.performAndWait {
-			objects.forEach {
-				$0[keyPath: keyPath] = value
-			}
-			save()
+	public func set<Value, C: Sequence>(value: Value,
+										for keyPath: ReferenceWritableKeyPath<T, Value>,
+										to objects: C) where C.Element == T {
+		objects.forEach {
+			$0[keyPath: keyPath] = value
 		}
-		
-		
+		save()
 	}
 }
 
-//protocol Duplicable {
-//	associatedtype Element: NSManagedObject
-//	func duplicate() -> NSManagedObject
-//}
-//
-//extension ObjectFactory {
-//	func duplicate<T: Duplicable>(object: T) -> T {
-//		return object.duplicate()
-//	}
-//}
+protocol Duplicatable {
+	func duplicate() -> Self
+}
+
+extension ObjectFactory where T : Duplicatable {
+	
+	func duplicate(object: T) -> T {
+		let result = object.duplicate()
+		return result
+	}
+	
+	func duplicate<C: Sequence>(objects: C) -> [T] where C.Element == T {
+		let result = objects.compactMap{ $0.duplicate() }
+		return result
+	}
+	
+}
