@@ -107,8 +107,10 @@ extension Store : StoreDataSource {
 		defer {
 			delegate?.storeDidReloadContent()
 		}
+		if !sortDescriptors.isEmpty {
+			fetchedResultController.fetchRequest.sortDescriptors = sortDescriptors
+		}
 		fetchedResultController.fetchRequest.predicate = predicate
-		fetchedResultController.fetchRequest.sortDescriptors = sortDescriptors
 		do {
 			try fetchedResultController.performFetch()
 		} catch {
