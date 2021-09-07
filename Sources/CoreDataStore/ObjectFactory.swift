@@ -8,8 +8,44 @@
 import Foundation
 import CoreData
 
+public protocol Duplicatable {
+	func duplicate() -> Self
+}
 
-public class ObjectFactory<T: NSManagedObject> {
+public protocol ObjectFactoryProtocol: AnyObject {
+	
+	associatedtype T: NSManagedObject & Duplicatable
+	
+	@discardableResult
+	func newObject() -> T
+	
+	@discardableResult
+	func newObject<Value>(with value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>) -> T
+	
+	@discardableResult
+	func newObject(configurationBlock: (T) -> ()) -> T
+	
+	func set<Value>(value: Value,
+						   for keyPath: ReferenceWritableKeyPath<T, Value>,
+						   in object: T)
+	
+	func delete(object: T)
+	
+	func delete<C: Sequence>(objects: C) where C.Element == T
+	
+	func set<Value, C: Sequence>(value: Value,
+								 for keyPath: ReferenceWritableKeyPath<T, Value>,
+								 to objects: C) where C.Element == T
+	
+	func perform<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T
+	
+	func duplicate(object: T) -> T
+	
+	func duplicate<C: Sequence>(objects: C) -> [T] where C.Element == T
+	
+}
+
+public class ObjectFactory<T: NSManagedObject & Duplicatable> {
 	
 	public private (set) var viewContext: NSManagedObjectContext
 	var errorHandler: ((Error) -> ())?
@@ -17,10 +53,6 @@ public class ObjectFactory<T: NSManagedObject> {
 	public init(viewContext context: NSManagedObjectContext) {
 		self.viewContext = context
 	}
-	
-}
-
-extension ObjectFactory {
 	
 	public func save() {
 		guard !viewContext.hasChanges else {
@@ -36,13 +68,18 @@ extension ObjectFactory {
 		
 	}
 	
-	/// Perform block for objects in the same context
-	/// - Warning: Objects must has same NSManagedObjectContext
-	private func perform<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T {
-		for object in objects {
-			block(object)
-		}
-		save()
+}
+
+extension ObjectFactory : ObjectFactoryProtocol {
+	
+	public func duplicate(object: T) -> T {
+		let result = object.duplicate()
+		return result
+	}
+	
+	public func duplicate<C: Sequence>(objects: C) -> [T] where C.Element == T {
+		let result = objects.compactMap{ $0.duplicate() }
+		return result
 	}
 	
 	@discardableResult
@@ -80,8 +117,6 @@ extension ObjectFactory {
 		save()
 	}
 	
-	// Batch operations
-	
 	public func delete<C: Sequence>(objects: C) where C.Element == T {
 		objects.forEach{
 			viewContext.delete($0)
@@ -97,22 +132,27 @@ extension ObjectFactory {
 		}
 		save()
 	}
+	
+	/// Perform block for objects in the same context
+	/// - Warning: Objects must has same NSManagedObjectContext
+	public func perform<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T {
+		for object in objects {
+			block(object)
+		}
+		save()
+	}
 }
 
-protocol Duplicatable {
-	func duplicate() -> Self
-}
-
-extension ObjectFactory where T : Duplicatable {
-	
-	func duplicate(object: T) -> T {
-		let result = object.duplicate()
-		return result
-	}
-	
-	func duplicate<C: Sequence>(objects: C) -> [T] where C.Element == T {
-		let result = objects.compactMap{ $0.duplicate() }
-		return result
-	}
-	
-}
+//class AsyncObjectFactory<T: NSManagedObject, Duplicatable> {
+//	
+//	var persistentContainer: NSPersistentContainer
+//	
+//	init(persistentContainer: NSPersistentContainer) {
+//		self.persistentContainer = persistentContainer
+//	}
+//	
+//	func performInBackground(block: (NSManagedObjectContext) -> ()) {
+//		
+//	}
+//	
+//}
