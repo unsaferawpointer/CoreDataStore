@@ -90,6 +90,7 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 }
 
 extension Store : StoreDataSource {
+	
 	public var numberOfObjects : Int {
 		return fetchedResultController.fetchedObjects?.count ?? 0
 	}
