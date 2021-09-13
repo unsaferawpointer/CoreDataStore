@@ -7,7 +7,10 @@ This package incapsulate work with Core Data stack.
 ```swift
 extension  DuplicatableNSManagedObject: Duplicatable {
 	func duplicate() -> Self {
-		if let result = DuplicatableNSManagedObject() as? Self {
+		guard let context = managedObjectContext else {
+			fatalError("managedObjectContext don't exist")
+		}
+		if let result = DuplicatableNSManagedObject(context: context) as? Self {
 			return result
 		}
 		fatalError("Your type is not the same as Self")
