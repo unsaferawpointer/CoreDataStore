@@ -4,14 +4,15 @@
 //
 //  Created by Anton Cherkasov on 12.06.2021.
 //
-#if os(macOS)
-import AppKit
-#endif
+//#if os(macOS)
+//import AppKit
+//#endif
+//
+//#if os(iOS)
+//import UIKit
+//#endif
 
-#if os(iOS)
-import UIKit
-#endif
-
+import Foundation
 import CoreData
 
 public protocol StoreDataSource {
@@ -61,21 +62,22 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 		guard let object = anObject as? T else {
 			fatalError("\(anObject) is not \(T.className())")
 		}
+		
 		switch type {
 		case .insert:
-			if let newIndex = newIndexPath?.item {
+			if let newIndex = newIndexPath?.first {
 				delegate?.storeDidInsert(object: object, at: newIndex)
 			}
 		case .delete:
-			if let oldIndex = indexPath?.item {
+			if let oldIndex = indexPath?.first {
 				delegate?.storeDidRemove(object: object, at: oldIndex)
 			}
 		case .move:
-			if let oldIndex = indexPath?.item, let newIndex = newIndexPath?.item {
+			if let oldIndex = indexPath?.first, let newIndex = newIndexPath?.first {
 				delegate?.storeDidMove(object: object, from: oldIndex, to: newIndex)
 			}
 		case .update:
-			if let oldIndex = indexPath?.item {
+			if let oldIndex = indexPath?.first {
 				delegate?.storeDidUpdate(object: object, at: oldIndex)
 			}
 		@unknown default:
