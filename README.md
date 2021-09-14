@@ -21,3 +21,6 @@ extension  DuplicatableNSManagedObject: Duplicatable {
 ```swift
 let factory = ObjectFactory<NSManagedObject>(viewContext: viewContext)
 ```
+
+## To Do
+- [ ] Add support to move operation
