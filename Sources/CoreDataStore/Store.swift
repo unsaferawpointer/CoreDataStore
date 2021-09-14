@@ -24,10 +24,10 @@ public protocol StoreDataSource {
 
 public protocol StoreDelegate : AnyObject {
 	func storeWillChangeContent()
-	func storeDelete(object: NSManagedObject, at index: Int)
-	func storeInsert(object: NSManagedObject, at index: Int)
-	func storeUpdate(object: NSManagedObject, at index: Int)
-	func storeMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int)
+	func storeDidRemove(object: NSManagedObject, at index: Int)
+	func storeDidInsert(object: NSManagedObject, at index: Int)
+	func storeDidUpdate(object: NSManagedObject, at index: Int)
+	func storeDidMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int)
 	func storeDidChangeContent()
 	func storeDidReloadContent()
 }
@@ -64,19 +64,19 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 		switch type {
 		case .insert:
 			if let newIndex = newIndexPath?.item {
-				delegate?.storeInsert(object: object, at: newIndex)
+				delegate?.storeDidInsert(object: object, at: newIndex)
 			}
 		case .delete:
 			if let oldIndex = indexPath?.item {
-				delegate?.storeDelete(object: object, at: oldIndex)
+				delegate?.storeDidRemove(object: object, at: oldIndex)
 			}
 		case .move:
 			if let oldIndex = indexPath?.item, let newIndex = newIndexPath?.item {
-				delegate?.storeMove(object: object, from: oldIndex, to: newIndex)
+				delegate?.storeDidMove(object: object, from: oldIndex, to: newIndex)
 			}
 		case .update:
 			if let oldIndex = indexPath?.item {
-				delegate?.storeUpdate(object: object, at: oldIndex)
+				delegate?.storeDidUpdate(object: object, at: oldIndex)
 			}
 		@unknown default:
 			fatalError()

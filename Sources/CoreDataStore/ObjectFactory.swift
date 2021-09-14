@@ -142,17 +142,3 @@ extension ObjectFactory : ObjectFactoryProtocol {
 		save()
 	}
 }
-
-//class AsyncObjectFactory<T: NSManagedObject, Duplicatable> {
-//
-//	var persistentContainer: NSPersistentContainer
-//
-//	init(persistentContainer: NSPersistentContainer) {
-//		self.persistentContainer = persistentContainer
-//	}
-//
-//	func performInBackground(block: (NSManagedObjectContext) -> ()) {
-//
-//	}
-//
-//}
