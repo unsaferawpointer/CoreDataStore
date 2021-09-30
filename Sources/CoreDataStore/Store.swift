@@ -42,16 +42,19 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	
 	public var errorHandler: ((Error) -> ())?
 	
-	public init(viewContext: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor]) {
+	/// Use this initializer if the class name is not the same as the entity name
+	public init(viewContext: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor], entityName: String) {
 		self.viewContext = viewContext
-		let fetchRequest: NSFetchRequest<T> = NSFetchRequest<T>.init(entityName: T.className())
+		let fetchRequest: NSFetchRequest<T> = NSFetchRequest<T>.init(entityName: entityName)
 		fetchRequest.sortDescriptors = sortDescriptors
-		
 		self.fetchedResultController = NSFetchedResultsController.init(fetchRequest: fetchRequest, managedObjectContext: viewContext, sectionNameKeyPath: nil, cacheName: nil)
-		
 		super.init()
-		
 		self.fetchedResultController.delegate = self
+	}
+	
+	public convenience init(viewContext: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor]) {
+		let entityName = T.className()
+		self.init(viewContext: viewContext, sortBy: sortDescriptors, entityName: entityName)
 	}
 	
 	public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {

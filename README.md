@@ -2,7 +2,7 @@
 
 This package incapsulate work with Core Data stack.
 
-### Example
+### Example of the Store
 
 ```swift
 extension  DuplicatableNSManagedObject: Duplicatable {
@@ -19,8 +19,12 @@ extension  DuplicatableNSManagedObject: Duplicatable {
 ```
 
 ```swift
-let factory = ObjectFactory<NSManagedObject>(viewContext: viewContext)
+let factory = ObjectFactory<DuplicatableNSManagedObject>(viewContext: viewContext)
 ```
+
+### Example of the Accumulate Changes Store
+
+
 
 ## To Do
 - [ ] Add support of the 'move' operation

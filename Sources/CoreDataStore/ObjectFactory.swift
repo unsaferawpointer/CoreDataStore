@@ -39,8 +39,10 @@ public protocol ObjectFactoryProtocol: AnyObject {
 	
 	func perform<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T
 	
+	@discardableResult
 	func duplicate(object: T) -> T
 	
+	@discardableResult
 	func duplicate<C: Sequence>(objects: C) -> [T] where C.Element == T
 	
 }
@@ -72,11 +74,13 @@ public class ObjectFactory<T: NSManagedObject & Duplicatable> {
 
 extension ObjectFactory : ObjectFactoryProtocol {
 	
+	@discardableResult
 	public func duplicate(object: T) -> T {
 		let result = object.duplicate()
 		return result
 	}
 	
+	@discardableResult
 	public func duplicate<C: Sequence>(objects: C) -> [T] where C.Element == T {
 		let result = objects.compactMap{ $0.duplicate() }
 		return result

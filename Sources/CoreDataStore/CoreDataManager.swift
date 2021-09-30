@@ -59,10 +59,10 @@ public class CoreDataManager {
     public func saveAction(_ sender: AnyObject?) {
         // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
         let context = persistentContainer.viewContext
-
-        if !context.commitEditing() {
-            NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing before saving")
-        }
+		
+//        if !context.commitEditing() {
+//            NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing before saving")
+//        }
         if context.hasChanges {
             do {
                 try context.save()
@@ -78,9 +78,9 @@ public class CoreDataManager {
         // Performs the save action for the application, which is to send the save: message to the application's managed object context. Any encountered errors are presented to the user.
         let context = persistentContainer.viewContext
 
-        if !context.commitEditing() {
-            NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing before saving")
-        }
+//        if !context.commitEditing() {
+//            NSLog("\(NSStringFromClass(type(of: self))) unable to commit editing before saving")
+//        }
         if context.hasChanges {
             do {
                 try context.save()
