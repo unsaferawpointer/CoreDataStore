@@ -1,8 +1,9 @@
 # CoreDataStore
 
-This package incapsulate work with Core Data stack.
+This package incapsulate work with Core Data stack and NSTableView.
+NSTableView don't support Core Data batch operation out of box.
 
-### Example of the Store
+### Example of the Core Data ObjectFactory
 
 ```swift
 extension  DuplicatableNSManagedObject: Duplicatable {
@@ -23,6 +24,9 @@ let factory = ObjectFactory<DuplicatableNSManagedObject>(viewContext: viewContex
 ```
 
 ### Example of the Accumulate Changes Store
+
+- [x] Support Core Data batch operation
+- [x] Save table selection
 
 ```swift
 
