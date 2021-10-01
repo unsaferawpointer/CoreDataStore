@@ -4,13 +4,6 @@
 //
 //  Created by Anton Cherkasov on 12.06.2021.
 //
-//#if os(macOS)
-//import AppKit
-//#endif
-//
-//#if os(iOS)
-//import UIKit
-//#endif
 
 import Foundation
 import CoreData

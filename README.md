@@ -24,6 +24,46 @@ let factory = ObjectFactory<DuplicatableNSManagedObject>(viewContext: viewContex
 
 ### Example of the Accumulate Changes Store
 
+```swift
+
+extension ContentViewController : NSTableViewDelegate {
+	func tableViewSelectionDidChange(_ notification: Notification) {
+		accumulateChangesStore.selectionDidChanged(newSelection: tableView.selectedRowIndexes)
+	}
+}
+
+extension ContentViewController : AccumulateChangesStoreDelegate {
+	
+	func accumulateChangesStoreWillChangeContent() {
+		tableView.beginUpdates()
+	}
+	
+	func accumulateChangesStoreDidInsert(indexSet: IndexSet) {
+		tableView.insertRows(at: indexSet, withAnimation: .slideRight)
+	}
+	
+	func accumulateChangesStoreDidRemove(indexSet: IndexSet) {
+		tableView.removeRows(at: indexSet, withAnimation: .slideLeft)
+	}
+	
+	func accumulateChangesStoreDidUpdate(indexSet: IndexSet) {
+		let columnIndexes = IndexSet(integersIn: 0..<tableView.numberOfColumns)
+		tableView.reloadData(forRowIndexes: indexSet, columnIndexes: columnIndexes)
+	}
+	
+	func accumulateChangesStoreDidChangeContent() {
+		tableView.endUpdates()
+	}
+	
+	func accumulateChangesStoreDidReloadContent() {
+		tableView.reloadData()
+	}
+	
+	func accumulateChangesStoreDidSelect(indexSet: IndexSet) {
+		tableView.selectRowIndexes(indexSet, byExtendingSelection: true)
+	}
+}
+```
 
 
 ## To Do
