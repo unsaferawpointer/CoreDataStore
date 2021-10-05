@@ -37,6 +37,7 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	
 	/// Use this initializer if the class name is not the same as the entity name
 	public init(viewContext: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor], entityName: String) {
+		assert(!sortDescriptors.isEmpty, "Store must have at least one sort descriptor")
 		self.viewContext = viewContext
 		let fetchRequest: NSFetchRequest<T> = NSFetchRequest<T>.init(entityName: entityName)
 		fetchRequest.sortDescriptors = sortDescriptors

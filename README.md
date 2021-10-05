@@ -5,6 +5,8 @@ NSTableView don't support Core Data batch operation out of box.
 
 ### Example of the Core Data ObjectFactory
 
+First of all, you must implement the Duplicatable - protocol for your NSManagedObject class.
+
 ```swift
 extension  DuplicatableNSManagedObject: Duplicatable {
 	func duplicate() -> Self {
@@ -12,6 +14,7 @@ extension  DuplicatableNSManagedObject: Duplicatable {
 			fatalError("managedObjectContext don't exist")
 		}
 		if let result = DuplicatableNSManagedObject(context: context) as? Self {
+			// Configure your diplicate here...
 			return result
 		}
 		fatalError("Your type is not the same as Self")
