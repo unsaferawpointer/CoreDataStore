@@ -127,7 +127,7 @@ extension AccumulateChangesStore: StoreDelegate {
 	private func getSelectedIndexSet(from removals: Set<Removal>, andInsertions insertions: Set<Insertion>) -> IndexSet {
 		let removedObjects = Set(removals.compactMap{ $0.object })
 		let insertedObjects = Set(insertions.compactMap{ $0.object })
-		let movedObjects = removedObjects.intersection(insertedObjects)
+		let movedObjects = Set(movings.map{ $0.object })
 		let selectedMovedObjects = movedObjects.intersection(selected)
 		let selectedMovedIndices = selectedMovedObjects.compactMap { store.objects.firstIndex(of: $0)}
 		return IndexSet(selectedMovedIndices)
