@@ -58,6 +58,7 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 		delegate?.storeWillChangeContent()
 	}
 	
+	#if os(MacOS)
 	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 		guard let object = anObject as? T else {
 			fatalError("\(anObject) is not \(T.className())")
@@ -68,25 +69,26 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 		#endif
 		switch type {
 		case .insert:
-			if let newIndex = newIndexPath?.first {
+			if let newIndex = newIndexPath?.item {
 				delegate?.storeDidInsert(object: object, at: newIndex)
 			}
 		case .delete:
-			if let oldIndex = indexPath?.first {
+			if let oldIndex = indexPath?.item {
 				delegate?.storeDidRemove(object: object, at: oldIndex)
 			}
 		case .move:
-			if let oldIndex = indexPath?.first, let newIndex = newIndexPath?.first {
+			if let oldIndex = indexPath?.item, let newIndex = newIndexPath?.item {
 				delegate?.storeDidMove(object: object, from: oldIndex, to: newIndex)
 			}
 		case .update:
-			if let oldIndex = indexPath?.first {
+			if let oldIndex = indexPath?.item {
 				delegate?.storeDidUpdate(object: object, at: oldIndex)
 			}
 		@unknown default:
 			fatalError()
 		}
 	}
+	#endif
 	
 	public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		#if DEBUG
