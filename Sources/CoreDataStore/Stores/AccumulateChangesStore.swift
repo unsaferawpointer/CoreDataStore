@@ -42,7 +42,7 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 	}
 
 	public let store: Store<T>
-	public weak var delegate: AccumulateChangesStoreDelegate?
+	public var delegate: AccumulateChangesStoreDelegate?
 	
 	// State
 	public var selected: Set<T> = []

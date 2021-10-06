@@ -77,12 +77,14 @@ extension ObjectFactory : ObjectFactoryProtocol {
 	@discardableResult
 	public func duplicate(object: T) -> T {
 		let result = object.duplicate()
+		save()
 		return result
 	}
 	
 	@discardableResult
 	public func duplicate<C: Sequence>(objects: C) -> [T] where C.Element == T {
 		let result = objects.compactMap{ $0.duplicate() }
+		save()
 		return result
 	}
 	
