@@ -52,6 +52,9 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	}
 	
 	public func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		#if DEBUG
+		NSLog(#function, [])
+		#endif
 		delegate?.storeWillChangeContent()
 	}
 	
@@ -59,7 +62,10 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 		guard let object = anObject as? T else {
 			fatalError("\(anObject) is not \(T.className())")
 		}
-		
+		#if DEBUG
+		NSLog(#function, [])
+		NSLog("%@ at indexPath = %@ newIndexPath = %@", [anObject, indexPath, newIndexPath])
+		#endif
 		switch type {
 		case .insert:
 			if let newIndex = newIndexPath?.first {
@@ -83,6 +89,9 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	}
 	
 	public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+		#if DEBUG
+		NSLog(#function, [])
+		#endif
 		delegate?.storeDidChangeContent()
 	}
 	
