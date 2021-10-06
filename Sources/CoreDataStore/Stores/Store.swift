@@ -7,6 +7,9 @@
 
 import Foundation
 import CoreData
+#if os(macOS)
+import AppKit
+#endif
 
 public protocol StoreDataSource {
 	associatedtype T
@@ -58,7 +61,7 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 		delegate?.storeWillChangeContent()
 	}
 	
-	#if os(MacOS)
+	#if os(macOS)
 	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
 		guard let object = anObject as? T else {
 			fatalError("\(anObject) is not \(T.className())")
