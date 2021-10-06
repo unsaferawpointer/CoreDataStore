@@ -8,7 +8,7 @@
 import Foundation
 import CoreData
 
-protocol AccumulateChangesStoreDelegate: AnyObject {
+public protocol AccumulateChangesStoreDelegate: AnyObject {
 	func accumulateChangesStoreDidChangeContent()
 	func accumulateChangesStoreWillChangeContent()
 	func accumulateChangesStoreDidInsert(indexSet: IndexSet)
@@ -18,7 +18,7 @@ protocol AccumulateChangesStoreDelegate: AnyObject {
 	func accumulateChangesStoreDidReloadContent()
 }
 
-class AccumulateChangesStore<T: NSManagedObject> {
+public class AccumulateChangesStore<T: NSManagedObject> {
 	
 	struct Moving : Hashable {
 		var object: T
@@ -41,8 +41,8 @@ class AccumulateChangesStore<T: NSManagedObject> {
 		var index: Int
 	}
 
-	let store: Store<T>
-	weak var delegate: AccumulateChangesStoreDelegate?
+	public let store: Store<T>
+	public weak var delegate: AccumulateChangesStoreDelegate?
 	
 	// State
 	private var selected: Set<T> = []
@@ -61,31 +61,31 @@ class AccumulateChangesStore<T: NSManagedObject> {
 
 extension AccumulateChangesStore: StoreDelegate {
 	
-	func storeWillChangeContent() {
+	public func storeWillChangeContent() {
 		isEditing = true
 	}
 	
-	func storeDidRemove(object: NSManagedObject, at index: Int) {
+	public func storeDidRemove(object: NSManagedObject, at index: Int) {
 		let change = Removal(object: object as! T, index: index)
 		removals.insert(change)
 	}
 	
-	func storeDidInsert(object: NSManagedObject, at index: Int) {
+	public func storeDidInsert(object: NSManagedObject, at index: Int) {
 		let change = Insertion(object: object as! T, index: index)
 		insertions.insert(change)
 	}
 	
-	func storeDidUpdate(object: NSManagedObject, at index: Int) {
+	public func storeDidUpdate(object: NSManagedObject, at index: Int) {
 		let change = Updating(object: object as! T, index: index)
 		updatings.insert(change)
 	}
 	
-	func storeDidMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int) {
+	public func storeDidMove(object: NSManagedObject, from oldIndex: Int, to newIndex: Int) {
 		let moving = Moving(object: object as! T, fromIndex: oldIndex, toIndex: newIndex)
 		movings.insert(moving)
 	}
 	
-	func storeDidChangeContent() {
+	public func storeDidChangeContent() {
 		let removedIndexSet = IndexSet(removals.map{ $0.index })
 		let insertedIndexSet = IndexSet(insertions.map{ $0.index })
 		let updatedIndexSet = IndexSet(updatings.map{ $0.index })
@@ -106,7 +106,7 @@ extension AccumulateChangesStore: StoreDelegate {
 		isEditing = false
 	}
 	
-	func storeDidReloadContent() {
+	public func storeDidReloadContent() {
 		delegate?.accumulateChangesStoreDidReloadContent()
 	}
 	
