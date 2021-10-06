@@ -60,7 +60,9 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 	}
 	
 	public func change(selection: IndexSet) {
-		selected = Set(selection.map{ store.objects[$0] })
+		if !isEditing {
+			selected = Set(selection.map{ store.objects[$0] })
+		}
 	}
 }
 
