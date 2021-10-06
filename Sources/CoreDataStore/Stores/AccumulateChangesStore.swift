@@ -42,7 +42,7 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 	}
 
 	public let store: Store<T>
-	public var delegate: AccumulateChangesStoreDelegate?
+	public weak var delegate: AccumulateChangesStoreDelegate?
 	
 	// State
 	public var selected: Set<T> = []
@@ -56,6 +56,7 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 	
 	public init(viewContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor]) {
 		self.store = Store<T>(viewContext: viewContext, sortBy: sortDescriptors)
+		self.store.delegate = self
 	}
 	
 	public func change(selection: IndexSet) {
