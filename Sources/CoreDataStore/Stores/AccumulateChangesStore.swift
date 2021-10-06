@@ -57,6 +57,10 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 	public init(viewContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor]) {
 		self.store = Store<T>(viewContext: viewContext, sortBy: sortDescriptors)
 	}
+	
+	func change(selection: IndexSet) {
+		selected = Set(selection.map{ store.objects[$0] })
+	}
 }
 
 extension AccumulateChangesStore: StoreDelegate {
