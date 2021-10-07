@@ -57,7 +57,7 @@ public class ObjectFactory<T: NSManagedObject & Duplicatable> {
 	}
 	
 	public func save() {
-		guard !viewContext.hasChanges else {
+		guard viewContext.hasChanges else {
 			return
 		}
 		do {
