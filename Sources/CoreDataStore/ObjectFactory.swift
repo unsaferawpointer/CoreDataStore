@@ -50,7 +50,7 @@ public protocol ObjectFactoryProtocol: AnyObject {
 public class ObjectFactory<T: NSManagedObject & Duplicatable> {
 	
 	public private (set) var viewContext: NSManagedObjectContext
-	var errorHandler: ((Error) -> ())?
+	public var errorHandler: ((Error) -> ())?
 	
 	public init(viewContext context: NSManagedObjectContext) {
 		self.viewContext = context

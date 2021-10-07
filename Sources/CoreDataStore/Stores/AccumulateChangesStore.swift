@@ -45,7 +45,7 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 	public weak var delegate: AccumulateChangesStoreDelegate?
 	
 	// State
-	public var selected: Set<T> = []
+	public private (set) var selected: Set<T> = []
 	
 	private var removals: Set<Removal> = []
 	private var insertions: Set<Insertion> = []
