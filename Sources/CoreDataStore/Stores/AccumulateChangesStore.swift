@@ -66,6 +66,14 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 	}
 }
 
+extension AccumulateChangesStoreDelegate {
+	subscript(index: Int) -> T {
+		get {
+			return store.objects[index]
+		}
+	}
+}
+
 extension AccumulateChangesStore: StoreDelegate {
 	
 	public func storeWillChangeContent() {

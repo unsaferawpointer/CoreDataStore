@@ -137,6 +137,14 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	
 }
 
+extension Store {
+	subscript(index: Int) -> T {
+		get {
+			return objects[index]
+		}
+	}
+}
+
 extension Store : StoreDataSource {
 	
 	public var numberOfObjects : Int {
