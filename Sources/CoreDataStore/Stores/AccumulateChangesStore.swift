@@ -61,7 +61,7 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 }
 
 extension AccumulateChangesStore {
-	subscript(index: Int) -> T {
+	public subscript(index: Int) -> T {
 		get {
 			return store.objects[index]
 		}

@@ -138,7 +138,7 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 }
 
 extension Store {
-	subscript(index: Int) -> T {
+	public subscript(index: Int) -> T {
 		get {
 			return objects[index]
 		}
