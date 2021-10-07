@@ -7,8 +7,13 @@
 
 import Foundation
 import CoreData
+
 #if os(macOS)
 import AppKit
+#endif
+
+#if os(iOS)
+import UIKit
 #endif
 
 public protocol StoreDataSource {
@@ -92,6 +97,39 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 		}
 	}
 	#endif
+	
+	#if os(iOS)
+	public func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+		guard let object = anObject as? T else {
+			fatalError("\(anObject) is not \(T.className())")
+		}
+		#if DEBUG
+		NSLog(#function)
+		NSLog("\(anObject) at indexPath = \(indexPath) newIndexPath = \(newIndexPath)")
+		#endif
+		switch type {
+		case .insert:
+			if let newIndex = newIndexPath?.row {
+				delegate?.storeDidInsert(object: object, at: newIndex)
+			}
+		case .delete:
+			if let oldIndex = indexPath?.row {
+				delegate?.storeDidRemove(object: object, at: oldIndex)
+			}
+		case .move:
+			if let oldIndex = indexPath?.row, let newIndex = newIndexPath?.item {
+				delegate?.storeDidMove(object: object, from: oldIndex, to: newIndex)
+			}
+		case .update:
+			if let oldIndex = indexPath?.row {
+				delegate?.storeDidUpdate(object: object, at: oldIndex)
+			}
+		@unknown default:
+			fatalError()
+		}
+	}
+	#endif
+	
 	
 	public func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
 		#if DEBUG
