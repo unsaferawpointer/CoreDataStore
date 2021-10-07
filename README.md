@@ -33,18 +33,11 @@ let factory = ObjectFactory<DuplicatableNSManagedObject>(viewContext: viewContex
 - [x] Support Core Data batch operation
 - [x] Save table selection
 
-
-```swift
-	func tableViewSelectionDidChange(_ notification: Notification) {
-		accumulateChangesStore.change(selection: tableView.selectedRowIndexes)
-	}
-```
-
 ```swift
 
 extension ContentViewController : NSTableViewDelegate {
 	func tableViewSelectionDidChange(_ notification: Notification) {
-		accumulateChangesStore.selectionDidChanged(newSelection: tableView.selectedRowIndexes)
+		accumulateChangesStore.change(selection: tableView.selectedRowIndexes)
 	}
 }
 
