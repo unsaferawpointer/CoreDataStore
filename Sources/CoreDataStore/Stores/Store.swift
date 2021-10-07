@@ -20,8 +20,7 @@ public protocol StoreDataSource {
 	associatedtype T
 	var objects: [T] { get }
 	var numberOfObjects: Int { get }
-	var numberOfSections: Int { get }
-	func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws 
+	func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws
 }
 
 public protocol StoreDelegate : AnyObject {
@@ -40,8 +39,6 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	
 	private var fetchedResultController: NSFetchedResultsController<T>
 	private var viewContext: NSManagedObjectContext
-	
-	public var errorHandler: ((Error) -> ())?
 	
 	/// Use this initializer if the class name is not the same as the entity name
 	public init(viewContext: NSManagedObjectContext, sortBy sortDescriptors: [NSSortDescriptor], entityName: String) {
@@ -146,16 +143,12 @@ extension Store : StoreDataSource {
 		return fetchedResultController.fetchedObjects?.count ?? 0
 	}
 	
-	public var numberOfSections: Int {
-		return fetchedResultController.sections?.count ?? 0
-	}
-
 	public var objects: [T] {
 		return fetchedResultController.fetchedObjects ?? []
 	}
 	
 	/// Perform fetch and call 'storeDidReloadContent' of the delegate
-	public func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) {
+	public func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws {
 		defer {
 			delegate?.storeDidReloadContent()
 		}
@@ -163,12 +156,7 @@ extension Store : StoreDataSource {
 			fetchedResultController.fetchRequest.sortDescriptors = sortDescriptors
 		}
 		fetchedResultController.fetchRequest.predicate = predicate
-		do {
-			try fetchedResultController.performFetch()
-		} catch {
-			errorHandler?(error)
-		}
-		
+		try fetchedResultController.performFetch()
 	}
 	
 }

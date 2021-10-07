@@ -41,7 +41,7 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 		var index: Int
 	}
 
-	public let store: Store<T>
+	private let store: Store<T>
 	public weak var delegate: AccumulateChangesStoreDelegate?
 	
 	// State
@@ -125,12 +125,24 @@ extension AccumulateChangesStore: StoreDelegate {
 	}
 	
 	private func getSelectedIndexSet(from removals: Set<Removal>, andInsertions insertions: Set<Insertion>) -> IndexSet {
-		let removedObjects = Set(removals.compactMap{ $0.object })
-		let insertedObjects = Set(insertions.compactMap{ $0.object })
 		let movedObjects = Set(movings.map{ $0.object })
 		let selectedMovedObjects = movedObjects.intersection(selected)
 		let selectedMovedIndices = selectedMovedObjects.compactMap { store.objects.firstIndex(of: $0)}
 		return IndexSet(selectedMovedIndices)
 	}
 	
+}
+
+extension AccumulateChangesStore: StoreDataSource {
+	public var objects: [T] {
+		return store.objects
+	}
+	
+	public var numberOfObjects: Int {
+		return store.numberOfObjects
+	}
+	
+	public func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws {
+		try store.performFetch(with: predicate, sortDescriptors: sortDescriptors)
+	}
 }
