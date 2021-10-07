@@ -66,7 +66,7 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 	}
 }
 
-extension AccumulateChangesStoreDelegate {
+extension AccumulateChangesStore {
 	subscript(index: Int) -> T {
 		get {
 			return store.objects[index]
