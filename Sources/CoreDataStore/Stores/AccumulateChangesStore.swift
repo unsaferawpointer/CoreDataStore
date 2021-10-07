@@ -16,6 +16,7 @@ public protocol AccumulateChangesStoreDelegate: AnyObject {
 	func accumulateChangesStoreDidSelect(indexSet: IndexSet)
 	func accumulateChangesStoreDidUpdate(indexSet: IndexSet)
 	func accumulateChangesStoreDidReloadContent()
+	func getSelectedRows() -> IndexSet
 }
 
 public class AccumulateChangesStore<T: NSManagedObject> {
@@ -45,25 +46,18 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 	public weak var delegate: AccumulateChangesStoreDelegate?
 	
 	// State
-	public private (set) var selected: Set<T> = []
+	private var selected: Set<T> = []
 	
 	private var removals: Set<Removal> = []
 	private var insertions: Set<Insertion> = []
 	private var updatings: Set<Updating> = []
 	private var movings: Set<Moving> = []
 	
-	var isEditing = false
-	
 	public init(viewContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor]) {
 		self.store = Store<T>(viewContext: viewContext, sortBy: sortDescriptors)
 		self.store.delegate = self
 	}
 	
-	public func change(selection: IndexSet) {
-		if !isEditing {
-			selected = Set(selection.map{ store.objects[$0] })
-		}
-	}
 }
 
 extension AccumulateChangesStore {
@@ -77,7 +71,8 @@ extension AccumulateChangesStore {
 extension AccumulateChangesStore: StoreDelegate {
 	
 	public func storeWillChangeContent() {
-		isEditing = true
+		delegate?.accumulateChangesStoreWillChangeContent()
+		selected = Set(delegate?.getSelectedRows().map{ store[$0] } ?? [])
 	}
 	
 	public func storeDidRemove(object: NSManagedObject, at index: Int) {
@@ -107,7 +102,6 @@ extension AccumulateChangesStore: StoreDelegate {
 		let movingsFromIndexSet = IndexSet(movings.map{ $0.fromIndex })
 		let movingsToIndexSet = IndexSet(movings.map{ $0.toIndex })
 		
-		delegate?.accumulateChangesStoreWillChangeContent()
 		delegate?.accumulateChangesStoreDidRemove(indexSet: removedIndexSet)
 		delegate?.accumulateChangesStoreDidInsert(indexSet: insertedIndexSet)
 		delegate?.accumulateChangesStoreDidUpdate(indexSet: updatedIndexSet)
@@ -118,7 +112,7 @@ extension AccumulateChangesStore: StoreDelegate {
 		let selectedMovedIndexSet = getSelectedIndexSet(from: removals, andInsertions: insertions)
 		delegate?.accumulateChangesStoreDidSelect(indexSet: selectedMovedIndexSet)
 		resetChanges()
-		isEditing = false
+		
 	}
 	
 	public func storeDidReloadContent() {
