@@ -1,7 +1,7 @@
 # CoreDataStore
 
-This package incapsulate work with Core Data stack and NSTableView.
-NSTableView don't support Core Data batch operation out of box.
+This package incapsulate works with Core Data stack and NSTableView.
+NSTableView doesn't support Core Data batch operation out of box.
 
 ### Example of the Core Data ObjectFactory
 
