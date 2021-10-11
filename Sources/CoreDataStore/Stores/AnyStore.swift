@@ -25,22 +25,22 @@ private class StoreBox<Base: StoreDataSource>: AnyStoreBox<Base.T> {
 	}
 }
 
-struct AnyStore<T> : StoreDataSource {
+public struct AnyStore<T> : StoreDataSource {
 	
 	private let box: AnyStoreBox<T>
 	init<StoreType: StoreDataSource>(_ store: StoreType) where StoreType.T == T {
 		box = StoreBox(store)
 	}
 	
-	var objects: [T] {
+	public var objects: [T] {
 		return box.objects
 	}
 	
-	var numberOfObjects: Int {
+	public var numberOfObjects: Int {
 		return box.numberOfObjects
 	}
 	
-	func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws {
+	public func performFetch(with predicate: NSPredicate?, sortDescriptors: [NSSortDescriptor]) throws {
 		try box.performFetch(with: predicate, sortDescriptors: sortDescriptors)
 	}
 	
