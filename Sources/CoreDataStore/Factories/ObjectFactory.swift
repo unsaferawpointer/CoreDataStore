@@ -14,15 +14,12 @@ public protocol Duplicatable {
 
 public protocol ObjectFactoryProtocol: AnyObject {
 	
-	associatedtype T: NSManagedObject & Duplicatable
+	associatedtype T: NSManagedObject
 	
-	@discardableResult
 	func newObject() -> T
 	
-	@discardableResult
 	func newObject<Value>(with value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>) -> T
 	
-	@discardableResult
 	func newObject(configurationBlock: (T) -> ()) -> T
 	
 	func set<Value>(value: Value,
@@ -39,15 +36,9 @@ public protocol ObjectFactoryProtocol: AnyObject {
 	
 	func perform<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T
 	
-	@discardableResult
-	func duplicate(object: T) -> T
-	
-	@discardableResult
-	func duplicate<C: Sequence>(objects: C) -> [T] where C.Element == T
-	
 }
 
-public class ObjectFactory<T: NSManagedObject & Duplicatable> {
+public final class ObjectFactory<T: NSManagedObject> {
 	
 	public private (set) var viewContext: NSManagedObjectContext
 	public var errorHandler: ((Error) -> ())?
@@ -73,20 +64,6 @@ public class ObjectFactory<T: NSManagedObject & Duplicatable> {
 }
 
 extension ObjectFactory : ObjectFactoryProtocol {
-	
-	@discardableResult
-	public func duplicate(object: T) -> T {
-		let result = object.duplicate()
-		save()
-		return result
-	}
-	
-	@discardableResult
-	public func duplicate<C: Sequence>(objects: C) -> [T] where C.Element == T {
-		let result = objects.compactMap{ $0.duplicate() }
-		save()
-		return result
-	}
 	
 	@discardableResult
 	public func newObject() -> T {
@@ -146,5 +123,22 @@ extension ObjectFactory : ObjectFactoryProtocol {
 			block(object)
 		}
 		save()
+	}
+}
+
+extension ObjectFactory where T: Duplicatable {
+	
+	@discardableResult
+	public func duplicate(object: T) -> T {
+		let result = object.duplicate()
+		save()
+		return result
+	}
+	
+	@discardableResult
+	public func duplicate<C: Sequence>(objects: C) -> [T] where C.Element == T {
+		let result = objects.compactMap{ $0.duplicate() }
+		save()
+		return result
 	}
 }
