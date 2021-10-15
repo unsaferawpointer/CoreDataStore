@@ -34,7 +34,7 @@ public protocol ObjectFactoryProtocol: AnyObject {
 								 for keyPath: ReferenceWritableKeyPath<T, Value>,
 								 to objects: C) where C.Element == T
 	
-	func perform<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T
+	func update<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T
 	
 }
 
@@ -118,7 +118,7 @@ extension ObjectFactory : ObjectFactoryProtocol {
 	
 	/// Perform block for objects in the same context
 	/// - Warning: Objects must has same NSManagedObjectContext
-	public func perform<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T {
+	public func update<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T {
 		for object in objects {
 			block(object)
 		}

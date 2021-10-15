@@ -37,14 +37,14 @@ private class AnyFactoryBox<T: NSManagedObject>: ObjectFactoryProtocol {
 		fatalError("It is abstract class")
 	}
 	
-	func perform<C>(block: @escaping ((T) -> ()), for objects: C) where C : Sequence, T == C.Element {
+	func update<C>(block: @escaping ((T) -> ()), for objects: C) where C : Sequence, T == C.Element {
 		fatalError("It is abstract class")
 	}
 }
 
 private class FactoryBox<Base: ObjectFactoryProtocol>: AnyFactoryBox<Base.T> {
-	let base: ObjectFactoryProtocol
-	init(_ base: ObjectFactoryProtocol) {
+	private var base: Base
+	init(_ base: Base) {
 		self.base = base
 	}
 }
