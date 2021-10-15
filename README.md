@@ -28,7 +28,7 @@ let factory = ObjectFactory<DuplicatableNSManagedObject>(viewContext: viewContex
 
 ### Example of the Accumulate Changes Store
 
-![me](https://github.com/unsaferawpointer/CoreDataStore/blob/main/Sources/Resource/tableview.gif)
+![me](https://github.com/unsaferawpointer/CoreDataStore/blob/master/Sources/Resource/tableview.gif)
 
 - [x] Support Core Data batch operation
 - [x] Save table selection
