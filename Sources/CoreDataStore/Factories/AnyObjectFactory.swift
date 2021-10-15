@@ -50,8 +50,40 @@ private class FactoryBox<Base: ObjectFactoryProtocol>: AnyFactoryBox<Base.T> {
 }
 
 public final class AnyFactory<T: NSManagedObject> : ObjectFactoryProtocol {
-	let box: AnyFactoryBox<T>
-	init<FactoryType: ObjectFactoryProtocol>(_ factory: FactoryType) where FactoryType.T = T {
+	private let box: AnyFactoryBox<T>
+	init<FactoryType: ObjectFactoryProtocol>(_ factory: FactoryType) where FactoryType.T == T {
 		self.box = FactoryBox(factory)
+	}
+	
+	public func newObject() -> T {
+		return box.newObject()
+	}
+	
+	public func newObject<Value>(with value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>) -> T {
+		return box.newObject(with: value, for: keyPath)
+	}
+	
+	public func newObject(configurationBlock block: (T) -> ()) -> T {
+		return box.newObject(configurationBlock: block)
+	}
+	
+	public func set<Value>(value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>, in object: T) {
+		box.set(value: value, for: keyPath, in: object)
+	}
+	
+	public func delete(object: T) {
+		box.delete(object: object)
+	}
+	
+	public func delete<C>(objects: C) where C : Sequence, T == C.Element {
+		box.delete(objects: objects)
+	}
+	
+	public func set<Value, C>(value: Value, for keyPath: ReferenceWritableKeyPath<T, Value>, to objects: C) where C : Sequence, T == C.Element {
+		box.set(value: value, for: keyPath, to: objects)
+	}
+	
+	public func update<C>(block: @escaping ((T) -> ()), for objects: C) where C : Sequence, T == C.Element {
+		box.update(block: block, for: objects)
 	}
 }
