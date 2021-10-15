@@ -46,6 +46,7 @@ private class FactoryBox<Base: ObjectFactoryProtocol>: AnyFactoryBox<Base.T> {
 	private var base: Base
 	init(_ base: Base) {
 		self.base = base
+		
 	}
 }
 
