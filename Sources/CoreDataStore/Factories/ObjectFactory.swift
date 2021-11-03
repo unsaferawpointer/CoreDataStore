@@ -135,7 +135,7 @@ extension ObjectFactory : ObjectFactoryProtocol {
 //
 
 extension ObjectFactory {
-	func deleteObjects<C: Sequence>(withIDs objectIDs: C) where C.Element == NSManagedObjectID {
+	public func deleteObjects<C: Sequence>(withIDs objectIDs: C) where C.Element == NSManagedObjectID {
 		objectIDs.compactMap { objectID in
 			viewContext.object(with: objectID) as? T
 		}.forEach { object in
