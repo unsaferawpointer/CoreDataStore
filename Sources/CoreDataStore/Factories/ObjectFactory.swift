@@ -58,7 +58,6 @@ public final class ObjectFactory<T: NSManagedObject> {
 				self.errorHandler?(error)
 			}
 		}
-		
 	}
 	
 }
@@ -121,6 +120,26 @@ extension ObjectFactory : ObjectFactoryProtocol {
 	public func update<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T {
 		for object in objects {
 			block(object)
+		}
+		save()
+	}
+	
+}
+
+//extension ObjectFactory {
+//	func performBatchInsert<C: Sequence>(objects: C) where C.Element == T {
+//		let dictionaries = objects.map{ $0.dictionaryWithValues(forKeys: T.attributeKeys()) }
+//		let request = NSBatchInsertRequest(entityName: T.className(), objects: dictionaries)
+//		let result = try? viewContext.execute(request) as? NSBatchInsertResult
+//	}
+//
+
+extension ObjectFactory {
+	func deleteObjects<C: Sequence>(withIDs objectIDs: C) where C.Element == NSManagedObjectID {
+		objectIDs.compactMap { objectID in
+			viewContext.object(with: objectID) as? T
+		}.forEach { object in
+			viewContext.delete(object)
 		}
 		save()
 	}
