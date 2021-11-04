@@ -37,7 +37,7 @@ private class AnyFactoryBox<T: NSManagedObject>: ObjectFactoryProtocol {
 		fatalError("It is abstract class")
 	}
 	
-	func update<C>(block: @escaping ((T) -> ()), for objects: C) where C : Sequence, T == C.Element {
+	func perform<C>(block: @escaping ((T) -> ()), for objects: C) where C : Sequence, T == C.Element {
 		fatalError("It is abstract class")
 	}
 }
@@ -84,7 +84,7 @@ public final class AnyFactory<T: NSManagedObject> : ObjectFactoryProtocol {
 		box.set(value: value, for: keyPath, to: objects)
 	}
 	
-	public func update<C>(block: @escaping ((T) -> ()), for objects: C) where C : Sequence, T == C.Element {
-		box.update(block: block, for: objects)
+	public func perform<C>(block: @escaping ((T) -> ()), for objects: C) where C : Sequence, T == C.Element {
+		box.perform(block: block, for: objects)
 	}
 }

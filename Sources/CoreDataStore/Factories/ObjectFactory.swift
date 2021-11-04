@@ -34,7 +34,7 @@ public protocol ObjectFactoryProtocol: AnyObject {
 								 for keyPath: ReferenceWritableKeyPath<T, Value>,
 								 to objects: C) where C.Element == T
 	
-	func update<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T
+	func perform<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T
 	
 }
 
@@ -117,7 +117,7 @@ extension ObjectFactory : ObjectFactoryProtocol {
 	
 	/// Perform block for objects in the same context
 	/// - Warning: Objects must has same NSManagedObjectContext
-	public func update<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T {
+	public func perform<C: Sequence>(block: @escaping ((T) -> ()), for objects: C) where C.Element == T {
 		for object in objects {
 			block(object)
 		}
@@ -135,19 +135,19 @@ extension ObjectFactory : ObjectFactoryProtocol {
 //
 
 extension ObjectFactory {
-	func getObjects<C: Sequence>(by objectIDs: C) where C.Element == NSManagedObjectID {
+	func getObjects<C: Sequence>(by objectIDs: C) -> [T] where C.Element == NSManagedObjectID  {
 		let objects = objectIDs.compactMap { objectID in
 			viewContext.object(with: objectID) as? T
 		}
+		return objects
 	}
 	public func deleteObjects<C: Sequence>(withIDs objectIDs: C) where C.Element == NSManagedObjectID {
 		let objects = getObjects(by: objectIDs)
 		delete(objects: objects)
-		save()
 	}
-	public func perform<C: Sequence>(block: @escaping ((T) -> Void), for objectsWithIDs objectIDs: C) where C.Element == NSManagedObjectID {
+	public func perform<C: Sequence>(block: @escaping ((T) -> Void), forObjectsWithIDs objectIDs: C) where C.Element == NSManagedObjectID {
 		let objects = getObjects(by: objectIDs)
-		update(block: block, for: objects)
+		perform(block: block, for: objects)
 	}
 }
 
