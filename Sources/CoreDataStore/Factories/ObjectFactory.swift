@@ -135,13 +135,19 @@ extension ObjectFactory : ObjectFactoryProtocol {
 //
 
 extension ObjectFactory {
-	public func deleteObjects<C: Sequence>(withIDs objectIDs: C) where C.Element == NSManagedObjectID {
-		objectIDs.compactMap { objectID in
+	func getObjects<C: Sequence>(by objectIDs: C) where C.Element == NSManagedObjectID {
+		let objects = objectIDs.compactMap { objectID in
 			viewContext.object(with: objectID) as? T
-		}.forEach { object in
-			viewContext.delete(object)
 		}
+	}
+	public func deleteObjects<C: Sequence>(withIDs objectIDs: C) where C.Element == NSManagedObjectID {
+		let objects = getObjects(by: objectIDs)
+		delete(objects: objects)
 		save()
+	}
+	public func perform<C: Sequence>(block: @escaping ((T) -> Void), for objectsWithIDs objectIDs: C) where C.Element == NSManagedObjectID {
+		let objects = getObjects(by: objectIDs)
+		update(block: block, for: objects)
 	}
 }
 
