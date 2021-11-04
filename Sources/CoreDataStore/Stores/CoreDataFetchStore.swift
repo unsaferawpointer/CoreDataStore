@@ -33,7 +33,7 @@ public protocol StoreDelegate : AnyObject {
 	func storeDidReloadContent()
 }
 
-public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
+public class CoreDataFetchStore<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDelegate {
 	
 	public weak var delegate: StoreDelegate?
 	
@@ -137,7 +137,7 @@ public class Store<T: NSManagedObject>: NSObject, NSFetchedResultsControllerDele
 	
 }
 
-extension Store {
+extension CoreDataFetchStore {
 	public subscript(index: Int) -> T {
 		get {
 			return objects[index]
@@ -145,7 +145,7 @@ extension Store {
 	}
 }
 
-extension Store : StoreDataSource {
+extension CoreDataFetchStore : StoreDataSource {
 	
 	public var numberOfObjects : Int {
 		return fetchedResultController.fetchedObjects?.count ?? 0

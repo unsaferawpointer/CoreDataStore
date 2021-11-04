@@ -25,7 +25,7 @@ private class StoreBox<Base: StoreDataSource>: AnyStoreBox<Base.T> {
 	}
 }
 
-public struct AnyStore<T> : StoreDataSource {
+public struct AnyCoreDataFetchStore<T> : StoreDataSource {
 	
 	private let box: AnyStoreBox<T>
 	init<StoreType: StoreDataSource>(_ store: StoreType) where StoreType.T == T {
