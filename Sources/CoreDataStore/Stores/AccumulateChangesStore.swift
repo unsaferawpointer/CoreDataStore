@@ -42,7 +42,7 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 		var index: Int
 	}
 
-	private let store: Store<T>
+	private let store: CoreDataFetchStore<T>
 	public weak var delegate: AccumulateChangesStoreDelegate?
 	
 	// State
@@ -54,7 +54,7 @@ public class AccumulateChangesStore<T: NSManagedObject> {
 	private var movings: Set<Moving> = []
 	
 	public init(viewContext: NSManagedObjectContext, sortDescriptors: [NSSortDescriptor]) {
-		self.store = Store<T>(viewContext: viewContext, sortBy: sortDescriptors)
+		self.store = CoreDataFetchStore<T>(viewContext: viewContext, sortBy: sortDescriptors)
 		self.store.delegate = self
 	}
 	

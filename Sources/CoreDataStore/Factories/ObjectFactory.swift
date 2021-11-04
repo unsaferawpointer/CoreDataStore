@@ -126,25 +126,20 @@ extension ObjectFactory : ObjectFactoryProtocol {
 	
 }
 
-//extension ObjectFactory {
-//	func performBatchInsert<C: Sequence>(objects: C) where C.Element == T {
-//		let dictionaries = objects.map{ $0.dictionaryWithValues(forKeys: T.attributeKeys()) }
-//		let request = NSBatchInsertRequest(entityName: T.className(), objects: dictionaries)
-//		let result = try? viewContext.execute(request) as? NSBatchInsertResult
-//	}
-//
-
 extension ObjectFactory {
+	
 	func getObjects<C: Sequence>(by objectIDs: C) -> [T] where C.Element == NSManagedObjectID  {
 		let objects = objectIDs.compactMap { objectID in
 			viewContext.object(with: objectID) as? T
 		}
 		return objects
 	}
+	
 	public func deleteObjects<C: Sequence>(withIDs objectIDs: C) where C.Element == NSManagedObjectID {
 		let objects = getObjects(by: objectIDs)
 		delete(objects: objects)
 	}
+	
 	public func perform<C: Sequence>(block: @escaping ((T) -> Void), forObjectsWithIDs objectIDs: C) where C.Element == NSManagedObjectID {
 		let objects = getObjects(by: objectIDs)
 		perform(block: block, for: objects)
